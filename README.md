@@ -1,20 +1,20 @@
-# Modern Java - A Guide to Java 8
-_This article was originally posted on [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
+# Modern Java -  Java 8 学习手册
+_原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 
-> [“Java is still not dead—and people are starting to figure that out.”](https://twitter.com/mreinhold/status/429603588525281280)
+> [“Java并没有没落，人们依然为之着迷”](https://twitter.com/mreinhold/status/429603588525281280)
 
-Welcome to my introduction to [Java 8](https://jdk8.java.net/). This tutorial guides you step by step through all new language features. Backed by short and simple code samples you'll learn how to use default interface methods, lambda expressions, method references and repeatable annotations. At the end of the article you'll be familiar with the most recent [API](http://download.java.net/jdk8/docs/api/) changes like streams, functional interfaces, map extensions and the new Date API. **No walls of text, just a bunch of commented code snippets. Enjoy!**
+感谢你对 [Java 8](https://jdk8.java.net/)的关注。本文将指导你一步步了解该语言的新特性。 通过一些短而简单的代码示例，你可以快速上手 default interface methods, lambda expressions, method references and repeatable annotations。文章结尾，你可以了解常用的[API](http://download.java.net/jdk8/docs/api/) 有哪些调整， 比如 streams, functional interfaces, map extensions 以及 the new Date API。 **本文采用片段式讲解，而非长篇贴代码 。 请尽情享受!**
 
 ---
 
 <p align="center">
- ★★★ Like this project? Leave a star, <a href="https://twitter.com/winterbe_">follow on Twitter</a> or <a href="https://www.paypal.me/winterbe">donate</a> to support my work. Thanks! ★★★
+ ★★★ 如果喜欢的话? 请点下收藏 , <a href="https://twitter.com/winterbe_"> 关注 Twitter</a> or <a href="https://www.paypal.me/winterbe">捐赠</a> 鼓励我继续写下去。 谢谢! ★★★
 </p>
 
 ---
 
 ## Table of Contents
-
+* [默认的接口方法](#默认的接口方法)
 * [Default Methods for Interfaces](#default-methods-for-interfaces)
 * [Lambda expressions](#lambda-expressions)
 * [Functional Interfaces](#functional-interfaces)
@@ -50,6 +50,8 @@ Welcome to my introduction to [Java 8](https://jdk8.java.net/). This tutorial gu
 * [Annotations](#annotations)
 * [Where to go from here?](#where-to-go-from-here)
 
+
+## 默认的接口方法
 ## Default Methods for Interfaces
 
 Java 8 enables us to add non-abstract method implementations to interfaces by utilizing the `default` keyword. This feature is also known as [virtual extension methods](http://stackoverflow.com/a/24102730). 
