@@ -6,9 +6,11 @@ package com.winterbe.java8.samples.lambda;
 public class Interface1 {
 
     interface Formula {
+
         double calculate(int a);
 
         default double sqrt(int a) {
+            System.out.println("sqrt方法：" + a);
             return Math.sqrt(positive(a));
         }
 
@@ -19,17 +21,18 @@ public class Interface1 {
 
     public static void main(String[] args) {
         Formula formula1 = new Formula() {
+
             @Override
             public double calculate(int a) {
                 return sqrt(a * 100);
             }
         };
 
-        formula1.calculate(100);     // 100.0
-        formula1.sqrt(-23);          // 0.0
-        Formula.positive(-4);        // 0.0
+        System.out.println(formula1.calculate(100)); // 100.0
+        System.out.println(formula1.sqrt(-23)); // 0.0
+        System.out.println(Formula.positive(-4)); // 0.0
 
-//        Formula formula2 = (a) -> sqrt( a * 100);
+        // Formula formula2 = (a) -> sqrt( a * 100);
     }
 
 }

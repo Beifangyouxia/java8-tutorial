@@ -14,8 +14,8 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 ---
 
 ## Table of Contents
-* [默认的接口方法](#默认的接口方法)
-* [Default Methods for Interfaces](#default-methods-for-interfaces)
+
+* [接口使用default方法](#接口使用default方法)
 * [Lambda expressions](#lambda-expressions)
 * [Functional Interfaces](#functional-interfaces)
 * [Method and Constructor References](#method-and-constructor-references)
@@ -51,14 +51,15 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 * [Where to go from here?](#where-to-go-from-here)
 
 
-## 默认的接口方法
-## Default Methods for Interfaces
+## 接口使用default方法
 
-Java 8 enables us to add non-abstract method implementations to interfaces by utilizing the `default` keyword. This feature is also known as [virtual extension methods](http://stackoverflow.com/a/24102730). 
+Java 8 允许我们在接口类中使用非结构化方法比如`default`修饰词，来实现接口。
+ 
+这一特性在 [virtual extension methods](http://stackoverflow.com/a/24102730)有详细介绍。
 
-Here is our first example:
+示例:
 
-```java
+```
 interface Formula {
     double calculate(int a);
 
@@ -67,10 +68,10 @@ interface Formula {
     }
 }
 ```
+`Formula` 接口类中除了定义抽象方法 `calculate`，还定义default方法`sqrt`。实现类必须实现抽象方法`calculate`。default修饰的方法`sqrt`在类外同样可以使用。
 
-Besides the abstract method `calculate` the interface `Formula` also defines the default method `sqrt`. Concrete classes only have to implement the abstract method `calculate`. The default method `sqrt` can be used out of the box.
 
-```java
+```
 Formula formula = new Formula() {
     @Override
     public double calculate(int a) {
@@ -82,7 +83,8 @@ formula.calculate(100);     // 100.0
 formula.sqrt(16);           // 4.0
 ```
 
-The formula is implemented as an anonymous object. The code is quite verbose: 6 lines of code for such a simple calculation of `sqrt(a * 100)`. As we'll see in the next section, there's a much nicer way of implementing single method objects in Java 8.
+公式采用匿名实现类。代码非常冗余，需要6行代码来实现一个简单的计算 `sqrt(a * 100)`。下一节中，用Java 8 能更加巧妙的实现一个方法。
+
 
 
 ## Lambda expressions
