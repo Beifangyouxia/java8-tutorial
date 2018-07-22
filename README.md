@@ -18,7 +18,7 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 * [接口使用default方法](#接口使用default方法)
 * [Lambda表达式](#lambda表达式)
 * [Functional接口](#functional接口)
-* [Method and Constructor References](#method-and-constructor-references)
+* [Method and Constructor References](#method-and-constructor-引用)
 * [Lambda Scopes](#lambda-scopes)
   * [Accessing local variables](#accessing-local-variables)
   * [Accessing fields and static variables](#accessing-fields-and-static-variables)
@@ -132,11 +132,12 @@ List类现在提供`sort`方法。同时java编译器能自动识别参数类型
 
 ## Functional接口
 
-How does lambda expressions fit into Java's type system? Each lambda corresponds to a given type, specified by an interface. A so called _functional interface_ must contain **exactly one abstract method** declaration. Each lambda expression of that type will be matched to this abstract method. Since default methods are not abstract you're free to add default methods to your functional interface.
+lambda表达式是如何识别Java的系统类型？每个lambda对应一个由接口指定的类型。因此每一个_functional 接口_ 的定义必须包含一个抽象方法声明。每个lambda表达式的类型需要与抽象方法匹配。由于默认方法不是抽象的，你需要将默认方法添加到函数接口。
 
-We can use arbitrary interfaces as lambda expressions as long as the interface only contains one abstract method. To ensure that your interface meet the requirements, you should add the `@FunctionalInterface` annotation. The compiler is aware of this annotation and throws a compiler error as soon as you try to add a second abstract method declaration to the interface.
+我们可以任意定义一个接口作为lambda表达式，其内部需要包含一个抽象方法。 为了确保接口满足规范，你需要添加 `@FunctionalInterface` 注解。一旦你试图添加第二个抽象方法，编译器会自动检测并抛出一个编译错误。
 
-Example:
+
+示例:
 
 ```java
 @FunctionalInterface
@@ -150,11 +151,12 @@ Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
 Integer converted = converter.convert("123");
 System.out.println(converted);    // 123
 ```
+代码：com.winterbe.java8.samples.lambda.Lambda2
 
-Keep in mind that the code is also valid if the `@FunctionalInterface` annotation would be omitted.
+记住，如果省略`@FunctionalInterface`，代码也是有效的。
 
 
-## Method and Constructor References
+## Method and Constructor 引用
 
 The above example code can be further simplified by utilizing static method references:
 
