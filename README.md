@@ -18,10 +18,10 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 * [接口使用default方法](#接口使用default方法)
 * [Lambda表达式](#lambda表达式)
 * [Functional接口](#functional接口)
-* [Method and Constructor References](#method-and-constructor-引用)
-* [Lambda Scopes](#lambda-scopes)
-  * [Accessing local variables](#accessing-local-variables)
-  * [Accessing fields and static variables](#accessing-fields-and-static-variables)
+* [Method and Constructor 引用](#method-and-constructor-引用)
+* [Lambda 范围](#lambda-范围)
+  * [本地变量](#本地变量)
+  * [访问字段或静态变量](#访问字段或静态变量)
   * [Accessing Default Interface Methods](#accessing-default-interface-methods)
 * [Built-in Functional Interfaces](#built-in-functional-interfaces)
   * [Predicates](#predicates)
@@ -158,7 +158,7 @@ System.out.println(converted);    // 123
 
 ## Method and Constructor 引用
 
-The above example code can be further simplified by utilizing static method references:
+上面的代码示例可以采用静态方法引用进一步简化：
 
 ```java
 Converter<String, Integer> converter = Integer::valueOf;
@@ -166,7 +166,8 @@ Integer converted = converter.convert("123");
 System.out.println(converted);   // 123
 ```
 
-Java 8 enables you to pass references of methods or constructors via the `::` keyword. The above example shows how to reference a static method. But we can also reference object methods:
+Java 8允许你通过方法或构造器的引用，如 `::` 。上面示例演示了引用一个静态方法。另外我们也可以用类实例对象的方法。
+
 
 ```java
 class Something {
@@ -183,7 +184,8 @@ String converted = converter.convert("Java");
 System.out.println(converted);    // "J"
 ```
 
-Let's see how the `::` keyword works for constructors. First we define an example class with different constructors:
+让我们了解下 `::` 字键字如何用在构造器中。首先定义一个类如下结构：
+
 
 ```java
 class Person {
@@ -199,7 +201,7 @@ class Person {
 }
 ```
 
-Next we specify a person factory interface to be used for creating new persons:
+接下来，我们定义一个person工厂接口，用于创建新的persons：
 
 ```java
 interface PersonFactory<P extends Person> {
@@ -207,22 +209,24 @@ interface PersonFactory<P extends Person> {
 }
 ```
 
-Instead of implementing the factory manually, we glue everything together via constructor references:
+与传统的实现方式不同，我们通过调用构造器方法来实现：
 
 ```java
 PersonFactory<Person> personFactory = Person::new;
 Person person = personFactory.create("Peter", "Parker");
 ```
 
-We create a reference to the Person constructor via `Person::new`. The Java compiler automatically chooses the right constructor by matching the signature of `PersonFactory.create`.
+我们通过 `Person::new`来触发Person的构造器函数。Java编译器能自动选择合适的构造器函数来匹配`PersonFactory.create`。
 
-## Lambda Scopes
+代码：com.winterbe.java8.samples.lambda.Lambda2
 
-Accessing outer scope variables from lambda expressions is very similar to anonymous objects. You can access final variables from the local outer scope as well as instance fields and static variables.
+## Lambda 范围
 
-### Accessing local variables
+lambda表达式访问外部变量同匿名对象相似。你可以访问final修饰的本地局部变量。
 
-We can read final local variables from the outer scope of lambda expressions:
+### 本地变量
+
+我们可以读取final修饰的本地变量
 
 ```java
 final int num = 1;
@@ -231,8 +235,7 @@ Converter<Integer, String> stringConverter =
 
 stringConverter.convert(2);     // 3
 ```
-
-But different to anonymous objects the variable `num` does not have to be declared final. This code is also valid:
+与匿名对象不同，变量`num`不必强制一定用final修饰。下面写法也是有效的：
 
 ```java
 int num = 1;
@@ -242,7 +245,7 @@ Converter<Integer, String> stringConverter =
 stringConverter.convert(2);     // 3
 ```
 
-However `num` must be implicitly final for the code to compile. The following code does **not** compile:
+`num`在代码编译时必须是隐式的final类型。下面的写法编译会报错：
 
 ```java
 int num = 1;
@@ -251,9 +254,7 @@ Converter<Integer, String> stringConverter =
 num = 3;
 ```
 
-Writing to `num` from within the lambda expression is also prohibited.
-
-### Accessing fields and static variables
+### 访问字段或静态变量
 
 In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. This behaviour is well known from anonymous objects.
 
