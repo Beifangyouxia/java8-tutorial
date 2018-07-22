@@ -16,8 +16,8 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 ## Table of Contents
 
 * [接口使用default方法](#接口使用default方法)
-* [Lambda expressions](#lambda-expressions)
-* [Functional Interfaces](#functional-interfaces)
+* [Lambda表达式](#lambda表达式)
+* [Functional接口](#functional接口)
 * [Method and Constructor References](#method-and-constructor-references)
 * [Lambda Scopes](#lambda-scopes)
   * [Accessing local variables](#accessing-local-variables)
@@ -87,9 +87,9 @@ formula.sqrt(16);           // 4.0
 
 
 
-## Lambda expressions
+## Lambda表达式
 
-Let's start with a simple example of how to sort a list of strings in prior versions of Java:
+一个简单例子，对字符串集合排序
 
 ```java
 List<String> names = Arrays.asList("peter", "anna", "mike", "xenia");
@@ -102,9 +102,10 @@ Collections.sort(names, new Comparator<String>() {
 });
 ```
 
-The static utility method `Collections.sort` accepts a list and a comparator in order to sort the elements of the given list. You often find yourself creating anonymous comparators and pass them to the sort method.
+静态方法 `Collections.sort` 接收list集合和一个comparator比较器从而实现排序功能。通常你需要创建一个匿名比较器，并传递给排序方法。
 
-Instead of creating anonymous objects all day long, Java 8 comes with a much shorter syntax, **lambda expressions**:
+为了替换匿名类实例，Java 8 引入一种非常简洁的语法， **lambda 表达式**:
+
 
 ```java
 Collections.sort(names, (String a, String b) -> {
@@ -112,22 +113,24 @@ Collections.sort(names, (String a, String b) -> {
 });
 ```
 
-As you can see the code is much shorter and easier to read. But it gets even shorter:
+当然你也可以采用更短更易读的写法，如上。
+
 
 ```java
 Collections.sort(names, (String a, String b) -> b.compareTo(a));
 ```
 
-For one line method bodies you can skip both the braces `{}` and the `return` keyword. But it gets even shorter:
+可以进一步精简，只剩一行代码，省略`{}`和`return`方法，如上。
+
 
 ```java
 names.sort((a, b) -> b.compareTo(a));
 ```
+List类现在提供`sort`方法。同时java编译器能自动识别参数类型，所以编码时你可以忽略它们。接下来让我们深入学习lambda表达式如何广泛使用。
 
-List now has a `sort` method. Also the java compiler is aware of the parameter types so you can skip them as well. Let's dive deeper into how lambda expressions can be used in the wild.
 
 
-## Functional Interfaces
+## Functional接口
 
 How does lambda expressions fit into Java's type system? Each lambda corresponds to a given type, specified by an interface. A so called _functional interface_ must contain **exactly one abstract method** declaration. Each lambda expression of that type will be matched to this abstract method. Since default methods are not abstract you're free to add default methods to your functional interface.
 
