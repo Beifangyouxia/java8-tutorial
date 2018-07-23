@@ -58,19 +58,19 @@ public class Streams1 {
 
         boolean anyStartsWithA = stringCollection
                 .stream()
-                .anyMatch((s) -> s.startsWith("a"));
+                .anyMatch((s) -> s.startsWith("a")); //只需要一个条件满足
 
         System.out.println(anyStartsWithA);      // true
 
         boolean allStartsWithA = stringCollection
                 .stream()
-                .allMatch((s) -> s.startsWith("a"));
+                .allMatch((s) -> s.startsWith("a")); //所有条件都要满足
 
         System.out.println(allStartsWithA);      // false
 
         boolean noneStartsWithZ = stringCollection
                 .stream()
-                .noneMatch((s) -> s.startsWith("z"));
+                .noneMatch((s) -> s.startsWith("z"));  //所有的条件都要不满足
 
         System.out.println(noneStartsWithZ);      // true
 

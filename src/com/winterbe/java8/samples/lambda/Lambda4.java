@@ -7,16 +7,15 @@ public class Lambda4 {
 
     static int outerStaticNum;
 
-    int outerNum;
+    int        outerNum;
 
     void testScopes() {
         int num = 1;
 
-        Lambda2.Converter<Integer, String> stringConverter =
-                (from) -> String.valueOf(from + num);
+        Lambda2.Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
 
         String convert = stringConverter.convert(2);
-        System.out.println(convert);    // 3
+        System.out.println(convert); // 3
 
         Lambda2.Converter<Integer, String> stringConverter2 = (from) -> {
             outerNum = 13;

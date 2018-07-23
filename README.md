@@ -20,16 +20,16 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 * [Functional接口](#functional接口)
 * [Method and Constructor 引用](#method-and-constructor-引用)
 * [Lambda 范围](#lambda-范围)
-  * [本地变量](#本地变量)
-  * [访问字段或静态变量](#访问字段或静态变量)
-  * [Accessing Default Interface Methods](#accessing-default-interface-methods)
-* [Built-in Functional Interfaces](#built-in-functional-interfaces)
+  * [局部变量](#局部变量)
+  * [访问全局变量或静态变量](#访问全局变量或静态变量)
+  * [default方法](#default方法)
+* [内置 Functional Interfaces](#内置-functional-interfaces)
   * [Predicates](#predicates)
   * [Functions](#functions)
   * [Suppliers](#suppliers)
   * [Consumers](#consumers)
   * [Comparators](#comparators)
-* [Optionals](#optionals)
+* [可选择 Optionals](#可选择-optionals)
 * [Streams](#streams)
   * [Filter](#filter)
   * [Sorted](#sorted)
@@ -224,7 +224,7 @@ Person person = personFactory.create("Peter", "Parker");
 
 lambda表达式访问外部变量同匿名对象相似。你可以访问final修饰的本地局部变量。
 
-### 本地变量
+### 局部变量
 
 我们可以读取final修饰的本地变量
 
@@ -254,15 +254,16 @@ Converter<Integer, String> stringConverter =
 num = 3;
 ```
 
-### 访问字段或静态变量
+### 访问全局变量或静态变量
 
-In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. This behaviour is well known from anonymous objects.
+与局部变量相反，我们可以在lambda表达式中读或写全局变量或静态全局变量。
 
 ```java
 class Lambda4 {
     static int outerStaticNum;
     int outerNum;
-
+	
+	// 方法
     void testScopes() {
         Converter<Integer, String> stringConverter1 = (from) -> {
             outerNum = 23;
@@ -277,26 +278,29 @@ class Lambda4 {
 }
 ```
 
-### Accessing Default Interface Methods
+代码：com.winterbe.java8.samples.lambda.Lambda4
 
-Remember the formula example from the first section? Interface `Formula` defines a default method `sqrt` which can be accessed from each formula instance including anonymous objects. This does not work with lambda expressions.
+### default方法
 
-Default methods **cannot** be accessed from within lambda expressions. The following code does not compile:
+还记得第一节的示例公式吗？`Formula`接口类中定义一个默认方法 `sqrt` ，它可以被每一个formula实例对象包括匿名对象访问。但这并适用于lambda表达式。
+
+lambda表达式语句不能直接访问default方法。下面写法编译不过：
 
 ```java
 Formula formula = (a) -> sqrt(a * 100);
 ```
 
 
-## Built-in Functional Interfaces
+## 内置 Functional Interfaces
 
-The JDK 1.8 API contains many built-in functional interfaces. Some of them are well known from older versions of Java like `Comparator` or `Runnable`. Those existing interfaces are extended to enable Lambda support via the `@FunctionalInterface` annotation.
 
-But the Java 8 API is also full of new functional interfaces to make your life easier. Some of those new interfaces are well known from the [Google Guava](https://code.google.com/p/guava-libraries/) library. Even if you're familiar with this library you should keep a close eye on how those interfaces are extended by some useful method extensions.
+JDK 1.8 API提供了许多内置的功能接口。其中一些来自Java旧版本，如`Comparator`或`Runnable`。通过`@FunctionalInterface`注解扩展那些已存在的接口以实现lambda支持。
+
+同时Java 8 API还提供一些新的functional interfaces满足多场景需求。一些新特性出自[Google Guava](https://code.google.com/p/guava-libraries/) 三方库。
 
 ### Predicates
 
-Predicates are boolean-valued functions of one argument. The interface contains various default methods for composing predicates to complex logical terms (and, or, negate)
+Predicates内部定义了一个boolean类型判断方法，带有一个入参。这个接口还包含很多default方法满足各种复杂的逻辑表达式，如（与、或、非）
 
 ```java
 Predicate<String> predicate = (s) -> s.length() > 0;
@@ -311,9 +315,12 @@ Predicate<String> isEmpty = String::isEmpty;
 Predicate<String> isNotEmpty = isEmpty.negate();
 ```
 
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 ### Functions
 
-Functions accept one argument and produce a result. Default methods can be used to chain multiple functions together (compose, andThen).
+函数接收一个入参并返回一个结果。`default`方法被用于将多个功能函数链接在一起，（compose 之前执行、andThen 之后执行）
+
 
 ```java
 Function<String, Integer> toInteger = Integer::valueOf;
@@ -321,28 +328,32 @@ Function<String, String> backToString = toInteger.andThen(String::valueOf);
 
 backToString.apply("123");     // "123"
 ```
+代码：com.winterbe.java8.samples.lambda.Lambda3
 
 ### Suppliers
 
-Suppliers produce a result of a given generic type. Unlike Functions, Suppliers don't accept arguments.
+Suppliers 生产指定类型的结果。不同于Functions，Suppliers 不接受任何参数。
 
 ```java
 Supplier<Person> personSupplier = Person::new;
 personSupplier.get();   // new Person
 ```
 
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 ### Consumers
 
-Consumers represent operations to be performed on a single input argument.
+Consumers 表示对单个输入参数加工处理，并提供 andThen 'default'方法进行后续处理。
 
 ```java
 Consumer<Person> greeter = (p) -> System.out.println("Hello, " + p.firstName);
 greeter.accept(new Person("Luke", "Skywalker"));
 ```
+代码：com.winterbe.java8.samples.lambda.Lambda3
 
 ### Comparators
 
-Comparators are well known from older versions of Java. Java 8 adds various default methods to the interface.
+Comparators 在Java老版本就已经存在。Java 8增加了各种各样的`default`方法
 
 ```java
 Comparator<Person> comparator = (p1, p2) -> p1.firstName.compareTo(p2.firstName);
@@ -353,12 +364,13 @@ Person p2 = new Person("Alice", "Wonderland");
 comparator.compare(p1, p2);             // > 0
 comparator.reversed().compare(p1, p2);  // < 0
 ```
+代码：com.winterbe.java8.samples.lambda.Lambda3
 
-## Optionals
+## 可选择 Optionals
 
-Optionals are not functional interfaces, but nifty utilities to prevent `NullPointerException`. It's an important concept for the next section, so let's have a quick look at how Optionals work.
+Optionals 不是一个函数式接口，主要是为了防止`NullPointerException`。下一节会重点介绍，现在让我们先了解下Optionals是如何工作的。
 
-Optional is a simple container for a value which may be null or non-null. Think of a method which may return a non-null result but sometimes return nothing. Instead of returning `null` you return an `Optional` in Java 8.
+Optional是一个用于存放 null 或非null值的简易容器。试想，一个带返回值的方法有时会返回空。相反，Java 8 返回的是`Optional` ，而非 `null`。
 
 ```java
 Optional<String> optional = Optional.of("bam");
@@ -370,13 +382,18 @@ optional.orElse("fallback");    // "bam"
 optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 ```
 
+代码：com.winterbe.java8.samples.stream.Optional1
+
 ## Streams
 
-A `java.util.Stream` represents a sequence of elements on which one or more operations can be performed. Stream operations are either _intermediate_ or _terminal_. While terminal operations return a result of a certain type, intermediate operations return the stream itself so you can chain multiple method calls in a row. Streams are created on a source, e.g. a `java.util.Collection` like lists or sets (maps are not supported). Stream operations can either be executed sequentially or parallely.
+`java.util.Stream` 可以对元素列表进行一次或多次操作。Stream操作可以是中间值也可以是最终结果。
+最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` like lists or sets (maps 并不支持)。Stream可以顺序执行，也可以并行执行。
 
-> Streams are extremely powerful, so I wrote a separate [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/). **You should also check out [Sequency](https://github.com/winterbe/sequency) as a similiar library for the web.**
 
-Let's first look how sequential streams work. First we create a sample source in form of a list of strings:
+> Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。 **你可以直接拉代码  [Sequency](https://github.com/winterbe/sequency) **
+
+让我们看看顺序streams是如何运作的。首先我们创建String类型的List集合。
+
 
 ```java
 List<String> stringCollection = new ArrayList<>();
@@ -390,11 +407,14 @@ stringCollection.add("bbb2");
 stringCollection.add("ddd1");
 ```
 
-Collections in Java 8 are extended so you can simply create streams either by calling `Collection.stream()` or `Collection.parallelStream()`. The following sections explain the most common stream operations.
+在Java 8中，对Collections进行了扩展。你可以通过 `Collection.stream()` 或`Collection.parallelStream()`来创建一个streams。下文将介绍一些常见的流操作。
+
+代码：com.winterbe.java8.samples.stream.Streams1
 
 ### Filter
 
-Filter accepts a predicate to filter all elements of the stream. This operation is _intermediate_ which enables us to call another stream operation (`forEach`) on the result. ForEach accepts a consumer to be executed for each element in the filtered stream. ForEach is a terminal operation. It's `void`, so we cannot call another stream operation.
+Filter通过predicate判断函数来过滤所有的元素。这个操作是中间态的，直到我们触发另一个流操作`forEach`得到结果。ForEach 对每一个过滤后的元素执行consumer函数。ForEach是一个终止操作。返回类型是`void`，因为后面不能继续接受stream操作。
+
 
 ```java
 stringCollection
@@ -407,7 +427,7 @@ stringCollection
 
 ### Sorted
 
-Sorted is an _intermediate_ operation which returns a sorted view of the stream. The elements are sorted in natural order unless you pass a custom `Comparator`.
+Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按自然顺序排序。
 
 ```java
 stringCollection
@@ -419,12 +439,13 @@ stringCollection
 // "aaa1", "aaa2"
 ```
 
-Keep in mind that `sorted` does only create a sorted view of the stream without manipulating the ordering of the backed collection. The ordering of `stringCollection` is untouched:
+记住 ，`sorted`只是创建流的排序视图，并没有改变原始集合的顺序。所以说`stringCollection`的顺序并没有改变。
 
 ```java
 System.out.println(stringCollection);
 // ddd2, aaa2, bbb1, aaa1, bbb3, ccc, bbb2, ddd1
 ```
+代码：com.winterbe.java8.samples.stream.Streams2
 
 ### Map
 

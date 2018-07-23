@@ -27,6 +27,7 @@ public class Concurrency1 {
 
         UUID searchResult = concurrentHashMap.search(threshold, (id, uuid) -> {
             if (String.valueOf(uuid).startsWith(String.valueOf(id))) {
+                System.out.println(id+"  "+uuid);
                 return uuid;
             }
             return null;

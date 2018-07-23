@@ -4,15 +4,14 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * Examples how to avoid null checks with Optional:
- *
- * http://winterbe.com/posts/2015/03/15/avoid-null-checks-in-java/
+ * Examples how to avoid null checks with Optional: http://winterbe.com/posts/2015/03/15/avoid-null-checks-in-java/
  *
  * @author Benjamin Winterberg
  */
 public class Optional2 {
 
     static class Outer {
+
         Nested nested = new Nested();
 
         public Nested getNested() {
@@ -21,6 +20,7 @@ public class Optional2 {
     }
 
     static class Nested {
+
         Inner inner = new Inner();
 
         public Inner getInner() {
@@ -29,6 +29,7 @@ public class Optional2 {
     }
 
     static class Inner {
+
         String foo = "boo";
 
         public String getFoo() {
@@ -46,31 +47,21 @@ public class Optional2 {
         try {
             T result = resolver.get();
             return Optional.ofNullable(result);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             return Optional.empty();
         }
     }
 
     private static void test3() {
         Outer outer = new Outer();
-        resolve(() -> outer.getNested().getInner().getFoo())
-                .ifPresent(System.out::println);
+        resolve(() -> outer.getNested().getInner().getFoo()).ifPresent(System.out::println);
     }
 
     private static void test2() {
-        Optional.of(new Outer())
-                .map(Outer::getNested)
-                .map(Nested::getInner)
-                .map(Inner::getFoo)
-                .ifPresent(System.out::println);
+        Optional.of(new Outer()).map(Outer::getNested).map(Nested::getInner).map(Inner::getFoo).ifPresent(System.out::println);
     }
 
     private static void test1() {
-        Optional.of(new Outer())
-                .flatMap(o -> Optional.ofNullable(o.nested))
-                .flatMap(n -> Optional.ofNullable(n.inner))
-                .flatMap(i -> Optional.ofNullable(i.foo))
-                .ifPresent(System.out::println);
+        Optional.of(new Outer()).flatMap(o -> Optional.ofNullable(o.nested)).flatMap(n -> Optional.ofNullable(n.inner)).flatMap(i -> Optional.ofNullable(i.foo)).ifPresent(System.out::println);
     }
 }

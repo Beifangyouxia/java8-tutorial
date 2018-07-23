@@ -18,6 +18,7 @@ public class Lambda3 {
 
     @FunctionalInterface
     interface Fun {
+
         void foo();
     }
 
@@ -27,36 +28,38 @@ public class Lambda3 {
 
         Predicate<String> predicate = (s) -> s.length() > 0;
 
-        predicate.test("foo");              // true
-        predicate.negate().test("foo");     // false
+        predicate.test("foo"); // true
+        predicate.negate().test("foo"); // false
 
-        Predicate<Boolean> nonNull = Objects::nonNull;
+        Predicate<String> nonNull = Objects::nonNull;
+        System.out.println("Objects::nonNull=== " + nonNull.test(null));
+
         Predicate<Boolean> isNull = Objects::isNull;
+        System.out.println("Objects::isNull=== " + isNull.test(true));
 
         Predicate<String> isEmpty = String::isEmpty;
+        System.out.println("String::isEmpty ==== " + isEmpty.test(""));
         Predicate<String> isNotEmpty = isEmpty.negate();
-
 
         // Functions
 
         Function<String, Integer> toInteger = Integer::valueOf;
         Function<String, String> backToString = toInteger.andThen(String::valueOf);
+        backToString.apply("123"); // "123"
 
-        backToString.apply("123");     // "123"
-
+        Function<String, String> f1 = (t) -> t + " is comming";
+        Function<String, String> f2 = f1.compose(t -> "Hi, " + t);
+        System.out.println("Function test=" + f2.apply("Tom"));
 
         // Suppliers
 
         Supplier<Person> personSupplier = Person::new;
-        personSupplier.get();   // new Person
-
+        personSupplier.get(); // new Person
 
         // Consumers
 
         Consumer<Person> greeter = (p) -> System.out.println("Hello, " + p.firstName);
         greeter.accept(new Person("Luke", "Skywalker"));
-
-
 
         // Comparators
 
@@ -65,15 +68,13 @@ public class Lambda3 {
         Person p1 = new Person("John", "Doe");
         Person p2 = new Person("Alice", "Wonderland");
 
-        comparator.compare(p1, p2);             // > 0
-        comparator.reversed().compare(p1, p2);  // < 0
-
+        comparator.compare(p1, p2); // > 0
+        comparator.reversed().compare(p1, p2); // < 0
 
         // Runnables
 
         Runnable runnable = () -> System.out.println(UUID.randomUUID());
         runnable.run();
-
 
         // Callables
 

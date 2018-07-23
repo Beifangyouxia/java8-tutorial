@@ -28,6 +28,7 @@ public class Interface1 {
             }
         };
 
+
         System.out.println(formula1.calculate(100)); // 100.0
         System.out.println(formula1.sqrt(-23)); // 0.0
         System.out.println(Formula.positive(-4)); // 0.0
