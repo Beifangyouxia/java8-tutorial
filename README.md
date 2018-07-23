@@ -24,15 +24,15 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
   * [访问全局变量或静态变量](#访问全局变量或静态变量)
   * [default方法](#default方法)
 * [内置 Functional Interfaces](#内置-functional-interfaces)
-  * [Predicates](#predicates)
-  * [Functions](#functions)
-  * [Suppliers](#suppliers)
-  * [Consumers](#consumers)
-  * [Comparators](#comparators)
+  * [判断 Predicates](#判断-predicates)
+  * [函数 Functions](#函数-functions)
+  * [生产 Suppliers](#生产-suppliers)
+  * [消费 Consumers](#消费-consumers)
+  * [比较 Comparators](#比较-comparators)
 * [可选择 Optionals](#可选择-optionals)
-* [Streams](#streams)
-  * [Filter](#filter)
-  * [Sorted](#sorted)
+* [流 Streams](#流-streams)
+  * [过滤 Filter](#过滤-filter)
+  * [排序 Sorted](#排序-sorted)
   * [Map](#map)
   * [Match](#match)
   * [Count](#count)
@@ -298,7 +298,7 @@ JDK 1.8 API提供了许多内置的功能接口。其中一些来自Java旧版�
 
 同时Java 8 API还提供一些新的functional interfaces满足多场景需求。一些新特性出自[Google Guava](https://code.google.com/p/guava-libraries/) 三方库。
 
-### Predicates
+### 判断 Predicates
 
 Predicates内部定义了一个boolean类型判断方法，带有一个入参。这个接口还包含很多default方法满足各种复杂的逻辑表达式，如（与、或、非）
 
@@ -317,7 +317,7 @@ Predicate<String> isNotEmpty = isEmpty.negate();
 
 代码：com.winterbe.java8.samples.lambda.Lambda3
 
-### Functions
+### 函数 Functions
 
 函数接收一个入参并返回一个结果。`default`方法被用于将多个功能函数链接在一起，（compose 之前执行、andThen 之后执行）
 
@@ -330,7 +330,7 @@ backToString.apply("123");     // "123"
 ```
 代码：com.winterbe.java8.samples.lambda.Lambda3
 
-### Suppliers
+### 生产 Suppliers
 
 Suppliers 生产指定类型的结果。不同于Functions，Suppliers 不接受任何参数。
 
@@ -341,7 +341,7 @@ personSupplier.get();   // new Person
 
 代码：com.winterbe.java8.samples.lambda.Lambda3
 
-### Consumers
+### 消费 Consumers
 
 Consumers 表示对单个输入参数加工处理，并提供 andThen 'default'方法进行后续处理。
 
@@ -351,7 +351,7 @@ greeter.accept(new Person("Luke", "Skywalker"));
 ```
 代码：com.winterbe.java8.samples.lambda.Lambda3
 
-### Comparators
+### 比较 Comparators
 
 Comparators 在Java老版本就已经存在。Java 8增加了各种各样的`default`方法
 
@@ -384,7 +384,7 @@ optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 
 代码：com.winterbe.java8.samples.stream.Optional1
 
-## Streams
+## 流 Streams
 
 `java.util.Stream` 可以对元素列表进行一次或多次操作。Stream操作可以是中间值也可以是最终结果。
 最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` like lists or sets (maps 并不支持)。Stream可以顺序执行，也可以并行执行。
@@ -411,7 +411,7 @@ stringCollection.add("ddd1");
 
 代码：com.winterbe.java8.samples.stream.Streams1
 
-### Filter
+### 过滤 Filter
 
 Filter通过predicate判断函数来过滤所有的元素。这个操作是中间态的，直到我们触发另一个流操作`forEach`得到结果。ForEach 对每一个过滤后的元素执行consumer函数。ForEach是一个终止操作。返回类型是`void`，因为后面不能继续接受stream操作。
 
@@ -425,7 +425,7 @@ stringCollection
 // "aaa2", "aaa1"
 ```
 
-### Sorted
+### 排序 Sorted
 
 Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按自然顺序排序。
 
