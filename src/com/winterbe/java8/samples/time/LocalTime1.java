@@ -39,7 +39,7 @@ public class LocalTime1 {
         System.out.println(now1);
         System.out.println(now2);
 
-        System.out.println(now1.isBefore(now2));  // false
+        System.out.println(now1.isAfter(now2));  // false
 
         long hoursBetween = ChronoUnit.HOURS.between(now1, now2);
         long minutesBetween = ChronoUnit.MINUTES.between(now1, now2);

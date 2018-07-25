@@ -33,22 +33,22 @@ _原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
 * [流 Streams](#流-streams)
   * [过滤 Filter](#过滤-filter)
   * [排序 Sorted](#排序-sorted)
-  * [Map](#map)
-  * [Match](#match)
-  * [Count](#count)
-  * [Reduce](#reduce)
-* [Parallel Streams](#parallel-streams)
-  * [Sequential Sort](#sequential-sort)
-  * [Parallel Sort](#parallel-sort)
-* [Maps](#maps)
-* [Date API](#date-api)
-  * [Clock](#clock)
-  * [Timezones](#timezones)
-  * [LocalTime](#localtime)
-  * [LocalDate](#localdate)
-  * [LocalDateTime](#localdatetime)
-* [Annotations](#annotations)
-* [Where to go from here?](#where-to-go-from-here)
+  * [映射 Map](#映射-map)
+  * [匹配 Match](#匹配-match)
+  * [计数 Count](#计数-count)
+  * [减少 Reduce](#减少-reduce)
+* [并行 Streams](#并行-streams)
+  * [串行 Sort](#串行-sort)
+  * [并行 Sort](#并行-sort)
+* [集合 Maps](#集合-maps)
+* [日期 API](#日期-api)
+  * [时钟](#时钟)
+  * [时区](#时区)
+  * [本地时间](#本地时间)
+  * [本地日期](#本地日期)
+  * [本地日期时间](#本地日期时间)
+* [注解](#注解)
+* [后续计划](#后续计划)
 
 
 ## 接口使用default方法
@@ -447,9 +447,10 @@ System.out.println(stringCollection);
 ```
 代码：com.winterbe.java8.samples.stream.Streams2
 
-### Map
+### 映射 Map
 
-The _intermediate_ operation `map` converts each element into another object via the given function. The following example converts each string into an upper-cased string. But you can also use `map` to transform each object into another type. The generic type of the resulting stream depends on the generic type of the function you pass to `map`.
+`map`是一种中间过程操作，借助函数表达式将元素转换成另一种形式。下面的例子将每个字符串转换成大写的字符串。但你也可以使用`map`将每个对象转换为另一种类型。最终输出的结果类型依赖于你传入的函数表达式。
+
 
 ```java
 stringCollection
@@ -461,9 +462,9 @@ stringCollection
 // "DDD2", "DDD1", "CCC", "BBB3", "BBB2", "AAA2", "AAA1"
 ```
 
-### Match
+### 匹配 Match
 
-Various matching operations can be used to check whether a certain predicate matches the stream. All of those operations are _terminal_ and return a boolean result.
+各种匹配操作用于判断是否满足stream条件。所有的操作都完成后，返回一个boolean类型结果。
 
 ```java
 boolean anyStartsWithA =
@@ -488,9 +489,9 @@ boolean noneStartsWithZ =
 System.out.println(noneStartsWithZ);      // true
 ```
 
-#### Count
+#### 计数 Count
 
-Count is a _terminal_ operation returning the number of elements in the stream as a `long`.
+Count是一个终止型操作，返回一个long类型的元素列表总数。
 
 ```java
 long startsWithB =
@@ -503,9 +504,9 @@ System.out.println(startsWithB);    // 3
 ```
 
 
-### Reduce
+### 减少 Reduce
 
-This _terminal_ operation performs a reduction on the elements of the stream with the given function. The result is an `Optional` holding the reduced value.
+终止型操作，通过给定的函数表达式来处理流中的前后两个元素、或者中间结果与下一个元素。并将最终返回的结果放入`Optional`。
 
 ```java
 Optional<String> reduced =
@@ -518,13 +519,17 @@ reduced.ifPresent(System.out::println);
 // "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
 ```
 
-## Parallel Streams
+更多reduce用法可参考：https://blog.csdn.net/io_field/article/details/54971679
 
-As mentioned above streams can be either sequential or parallel. Operations on sequential streams are performed on a single thread while operations on parallel streams are performed concurrently on multiple threads.
+代码：com.winterbe.java8.samples.stream.Streams11
 
-The following example demonstrates how easy it is to increase the performance by using parallel streams.
+## 并行 Streams
 
-First we create a large list of unique elements:
+如下所述，流可以是串行执行，也可以并行执行。对于流的串行执行是单个线程完成。而并行流处理则是在多个线程上同时执行。
+
+下面这个例子将会演示如何通过并行流处理来显著提升性能。
+
+首先我们创建一个大容量的List元素集合：
 
 ```java
 int max = 1000000;
@@ -535,9 +540,11 @@ for (int i = 0; i < max; i++) {
 }
 ```
 
-Now we measure the time it takes to sort a stream of this collection.
+代码：com.winterbe.java8.samples.stream.Streams11
 
-### Sequential Sort
+现在我们测量对此集合的流排序所花费的时间。  
+
+### 串行 Sort
 
 ```java
 long t0 = System.nanoTime();
@@ -553,7 +560,9 @@ System.out.println(String.format("sequential sort took: %d ms", millis));
 // sequential sort took: 899 ms
 ```
 
-### Parallel Sort
+代码：com.winterbe.java8.samples.stream.Streams3
+
+### 并行 Sort
 
 ```java
 long t0 = System.nanoTime();
@@ -569,13 +578,17 @@ System.out.println(String.format("parallel sort took: %d ms", millis));
 // parallel sort took: 472 ms
 ```
 
-As you can see both code snippets are almost identical but the parallel sort is roughly 50% faster. All you have to do is change `stream()` to `parallelStream()`.
+代码：com.winterbe.java8.samples.stream.Streams3
 
-## Maps
+正如你所看到的那样，两块代码片段几乎是相同的。但并行排序大约能快50%。所以你要做的是将`stream()`换成`parallelStream()`。
 
-As already mentioned maps do not directly support streams. There's no `stream()` method available on the `Map` interface itself, however you can create specialized streams upon the keys, values or entries of a map via `map.keySet().stream()`, `map.values().stream()` and `map.entrySet().stream()`. 
+## 集合 Maps
 
-Furthermore maps support various new and useful methods for doing common tasks.
+如前所述，Maps不直接支持streams。Map接口并不提供 `stream()`相关方法。然而你能借助于`map.keySet().stream()`, `map.values().stream()` 和 `map.entrySet().stream()`创建基于keys，values或entries的流。
+
+此外maps还提供一些新的有用的方法来支持常规任务。
+
+代码：com.winterbe.java8.samples.misc.Maps1
 
 ```java
 Map<Integer, String> map = new HashMap<>();
@@ -587,9 +600,9 @@ for (int i = 0; i < 10; i++) {
 map.forEach((id, val) -> System.out.println(val));
 ```
 
-The above code should be self-explaining: `putIfAbsent` prevents us from writing additional if null checks; `forEach` accepts a consumer to perform operations for each value of the map.
+ `putIfAbsent`如果为空，执行put，否则返回key对应的value值，这样可以避免一次空判断代码冗余。`forEach`内部通过BiConsumer来操作。
 
-This example shows how to compute code on the map by utilizing functions:
+下面的例子讲述了，map如何利用functions函数来计算：
 
 ```java
 map.computeIfPresent(3, (num, val) -> val + num);
@@ -602,12 +615,14 @@ map.computeIfAbsent(23, num -> "val" + num);
 map.containsKey(23);    // true
 
 map.computeIfAbsent(3, num -> "bam");
-map.get(3);             // val33
+map.get(3);             // val33（缺失才执行）
 ```
 
-Next, we learn how to remove entries for a given key, only if it's currently mapped to a given value:
+下面，我们学习如何通过给定key来删除entries，前提它当前存在kv映射：
 
 ```java
+
+// 3对应的value等于“val3”，才执行删除动作
 map.remove(3, "val3");
 map.get(3);             // val33
 
@@ -615,13 +630,14 @@ map.remove(3, "val33");
 map.get(3);             // null
 ```
 
-Another helpful method:
+其它有用的方法：
 
 ```java
+// 返回key关联的值，否则返回后面的默认值
 map.getOrDefault(42, "not found");  // not found
 ```
 
-Merging entries of a map is quite easy:
+map中的entries合并也是非常容易的：
 
 ```java
 map.merge(9, "val9", (value, newValue) -> value.concat(newValue));
@@ -631,14 +647,16 @@ map.merge(9, "concat", (value, newValue) -> value.concat(newValue));
 map.get(9);             // val9concat
 ```
 
-Merge either put the key/value into the map if no entry for the key exists, or the merging function will be called to change the existing value.
+如果key-value键值对不存在，则合并到map中。否则执行function函数来改变其value值。
 
 
-## Date API
+## 日期 API
 
-Java 8 contains a brand new date and time API under the package `java.time`. The new Date API is comparable with the [Joda-Time](http://www.joda.org/joda-time/) library, however it's [not the same](http://blog.joda.org/2009/11/why-jsr-310-isn-joda-time_4941.html). The following examples cover the most important parts of this new API.
+Java 8提供了全新的日期和时间API，位于 `java.time`包下面。全新的日期API与[Joda-Time](http://www.joda.org/joda-time/) 库相当，但它也[不太一样](http://blog.joda.org/2009/11/why-jsr-310-isn-joda-time_4941.html)。下面的例子涵盖了此新API的最重要部分。
 
-### Clock
+### 时钟
+
+时钟提供了对当前日期和时间的访问。时钟知晓时区，可以用来代替`System.currentTimeMillis()`来检索自Unix EPOCH以来的当前时间（以毫秒为单位）。在时间轴上的某一时刻用`Instant`表示。`Instant`可以创建遗留的`java.util.Date` 对象。
 
 Clock provides access to the current date and time. Clocks are aware of a timezone and may be used instead of `System.currentTimeMillis()` to retrieve the current time in milliseconds since Unix EPOCH. Such an instantaneous point on the time-line is also represented by the class `Instant`. Instants can be used to create legacy `java.util.Date` objects.
 
@@ -649,10 +667,11 @@ long millis = clock.millis();
 Instant instant = clock.instant();
 Date legacyDate = Date.from(instant);   // legacy java.util.Date
 ```
+代码：com.winterbe.java8.samples.time.LocalTime1
 
-### Timezones
+### 时区
 
-Timezones are represented by a `ZoneId`. They can easily be accessed via static factory methods. Timezones define the offsets which are important to convert between instants and local dates and times.
+时区是通过 `ZoneId`来表示，它提供了很多静态方法。时区定义了在瞬间和本地日期和时间之间转换的重要偏移。
 
 ```java
 System.out.println(ZoneId.getAvailableZoneIds());
@@ -667,9 +686,11 @@ System.out.println(zone2.getRules());
 // ZoneRules[currentStandardOffset=-03:00]
 ```
 
-### LocalTime
+代码：com.winterbe.java8.samples.time.LocalTime1
 
-LocalTime represents a time without a timezone, e.g. 10pm or 17:30:15. The following example creates two local times for the timezones defined above. Then we compare both times and calculate the difference in hours and minutes between both times.
+### 本地时间
+
+LocalTime表示没有时区的时间，如晚上10点 或者 17:30:15。下文例子创建了两个带时区的本地时间。我们比较这两个时间，并计算两者之间的小时或分钟差值。
 
 ```java
 LocalTime now1 = LocalTime.now(zone1);
@@ -684,7 +705,7 @@ System.out.println(hoursBetween);       // -3
 System.out.println(minutesBetween);     // -239
 ```
 
-LocalTime comes with various factory methods to simplify the creation of new instances, including parsing of time strings.
+LocalTime 提供了很多工厂方法用于创建各种新实例，包括解析时间字符串。
 
 ```java
 LocalTime late = LocalTime.of(23, 59, 59);
@@ -699,9 +720,12 @@ LocalTime leetTime = LocalTime.parse("13:37", germanFormatter);
 System.out.println(leetTime);   // 13:37
 ```
 
-### LocalDate
+代码：com.winterbe.java8.samples.time.LocalTime1
 
-LocalDate represents a distinct date, e.g. 2014-03-11. It's immutable and works exactly analog to LocalTime. The sample demonstrates how to calculate new dates by adding or subtracting days, months or years. Keep in mind that each manipulation returns a new instance.
+### 本地日期
+
+LocalDate表示不同的日期，如 2014-03-11。它是不可变的并且与LocalTime完全相似。示例演示了加或减天，月，年来计算新日期。请记住，每次操作都会返回一个新实例。
+
 
 ```java
 LocalDate today = LocalDate.now();
@@ -713,7 +737,7 @@ DayOfWeek dayOfWeek = independenceDay.getDayOfWeek();
 System.out.println(dayOfWeek);    // FRIDAY
 ```
 
-Parsing a LocalDate from a string is just as simple as parsing a LocalTime:
+从字符串解析LocalDate就像解析LocalTime一样简单：
 
 ```java
 DateTimeFormatter germanFormatter =
@@ -725,9 +749,13 @@ LocalDate xmas = LocalDate.parse("24.12.2014", germanFormatter);
 System.out.println(xmas);   // 2014-12-24
 ```
 
-### LocalDateTime
+代码：com.winterbe.java8.samples.time.LocalDate1
 
-LocalDateTime represents a date-time. It combines date and time as seen in the above sections into one instance. `LocalDateTime` is immutable and works similar to LocalTime and LocalDate. We can utilize methods for retrieving certain fields from a date-time:
+### 本地日期时间
+
+LocalDateTime表示日期时间。它包含了上面的日期和时间组成一个实例。`LocalDateTime`是不可变的，它的工作方式类似于LocalTime 和 LocalDate。我们可以利用日期时间检索某些字段的方法：
+
+代码：com.winterbe.java8.samples.time.LocalDateTime1
 
 ```java
 LocalDateTime sylvester = LocalDateTime.of(2014, Month.DECEMBER, 31, 23, 59, 59);
@@ -742,7 +770,7 @@ long minuteOfDay = sylvester.getLong(ChronoField.MINUTE_OF_DAY);
 System.out.println(minuteOfDay);    // 1439
 ```
 
-With the additional information of a timezone it can be converted to an instant. Instants can easily be converted to legacy dates of type `java.util.Date`.
+通过时区的附加信息，它可以转换为时刻。轻松地将实例转换为`java.util.Date`类型的旧日期。
 
 ```java
 Instant instant = sylvester
@@ -752,29 +780,26 @@ Instant instant = sylvester
 Date legacyDate = Date.from(instant);
 System.out.println(legacyDate);     // Wed Dec 31 23:59:59 CET 2014
 ```
-
-Formatting date-times works just like formatting dates or times. Instead of using pre-defined formats we can create formatters from custom patterns.
+格式化日期-时间就象格式化日期或者时间一样。我们可以使用自定义模式创建格式化程序，而不是使用预定义的格式。
 
 ```java
-DateTimeFormatter formatter =
-    DateTimeFormatter
-        .ofPattern("MMM dd, yyyy - HH:mm");
-
-LocalDateTime parsed = LocalDateTime.parse("Nov 03, 2014 - 07:13", formatter);
-String string = formatter.format(parsed);
-System.out.println(string);     // Nov 03, 2014 - 07:13
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM dd, yyyy - HH:mm");
+        LocalDateTime parsed = LocalDateTime.parse("07 25, 2017 - 14:00", formatter);
+        System.out.println(parsed); // 2017-07-25T14:00
 ```
 
-Unlike `java.text.NumberFormat` the new `DateTimeFormatter` is immutable and **thread-safe**.
+与 `java.text.NumberFormat` 不同， `DateTimeFormatter`  是不可改变的， **线程安全**.
 
-For details on the pattern syntax read [here](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html).
+更多语法详情， [参考这里](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html).
 
 
-## Annotations
+## 注解
 
-Annotations in Java 8 are repeatable. Let's dive directly into an example to figure that out.
+Java 8中的注解是可重复的。让我们通过一个例子说明。
 
-First, we define a wrapper annotation which holds an array of the actual annotations:
+首先，我们定义一个包装器注解，它包含实际注解的数组：
+
+代码：com.winterbe.java8.samples.misc.Annotations1
 
 ```java
 @interface Hints {
@@ -786,16 +811,17 @@ First, we define a wrapper annotation which holds an array of the actual annotat
     String value();
 }
 ```
-Java 8 enables us to use multiple annotations of the same type by declaring the annotation `@Repeatable`.
 
-### Variant 1: Using the container annotation (old school)
+Java 8允许我们通过声明注解 `@Repeatable`来使用相同类型的多个注释。
+
+### 形式 1: 使用容器注解 (旧方式)
 
 ```java
 @Hints({@Hint("hint1"), @Hint("hint2")})
 class Person {}
 ```
 
-### Variant 2: Using repeatable annotations (new school)
+### 形式 2: 使用可重复注解 (新方式)
 
 ```java
 @Hint("hint1")
@@ -803,7 +829,7 @@ class Person {}
 class Person {}
 ```
 
-Using variant 2 the java compiler implicitly sets up the `@Hints` annotation under the hood. That's important for reading annotation information via reflection.
+形式2，java编译器隐式的设置`@Hints` 注解。这对于经由反射读取注解信息非常重要。
 
 ```java
 Hint hint = Person.class.getAnnotation(Hint.class);
@@ -816,21 +842,22 @@ Hint[] hints2 = Person.class.getAnnotationsByType(Hint.class);
 System.out.println(hints2.length);          // 2
 ```
 
-Although we never declared the `@Hints` annotation on the `Person` class, it's still readable via `getAnnotation(Hints.class)`. However, the more convenient method is `getAnnotationsByType` which grants direct access to all annotated `@Hint` annotations.
+虽然我们从未在 `Person` 类上定义`@Hints`注解，但它仍然可以通过 `getAnnotation(Hints.class)`读取。然而，更方便的是 `getAnnotationsByType`能访问所有带`@Hint`的注解。
 
 
-Furthermore the usage of annotations in Java 8 is expanded to two new targets:
+此外，Java 8 注解扩展了两个新的target：
+
 
 ```java
 @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
 @interface MyAnnotation {}
 ```
 
-## Where to go from here?
+## 后续计划
 
-My programming guide to Java 8 ends here. If you want to learn more about all the new classes and features of the JDK 8 API, check out my [JDK8 API Explorer](http://winterbe.com/projects/java8-explorer/). It helps you figuring out all the new classes and hidden gems of JDK 8, like `Arrays.parallelSort`, `StampedLock` and `CompletableFuture` - just to name a few.
+我的Java 8 编程指南到这里就结束了。如果你想了解有关JDK 8 API的所有新类及功能特性，下载代码[JDK8 API Explorer](http://winterbe.com/projects/java8-explorer/)。它会帮助你找到所有新增的类，如`Arrays.parallelSort`, `StampedLock` 以及 `CompletableFuture`，仅举几例。
 
-I've also published a bunch of follow-up articles on my [blog](http://winterbe.com) that might be interesting to you:
+后续精彩文章请关注我的 [博客](http://winterbe.com) ，有你感兴趣的内容:
 
 - [Java 8 Stream Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)
 - [Java 8 Nashorn Tutorial](http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/)
@@ -842,4 +869,4 @@ I've also published a bunch of follow-up articles on my [blog](http://winterbe.c
 - [Fixing Java 8 Stream Gotchas with IntelliJ IDEA](http://winterbe.com/posts/2015/03/05/fixing-java-8-stream-gotchas-with-intellij-idea/)
 - [Using Backbone.js with Java 8 Nashorn](http://winterbe.com/posts/2014/04/07/using-backbonejs-with-nashorn/)
 
-You should [follow me on Twitter](https://twitter.com/winterbe_). Thanks for reading!
+[关注我的Twitter](https://twitter.com/winterbe_)。感谢阅读！

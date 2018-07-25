@@ -12,6 +12,7 @@ public class Streams3 {
 
     public static final int MAX = 1000000;
 
+    // 串行排序所需要的时间
     public static void sortSequential() {
         List<String> values = new ArrayList<>(MAX);
         for (int i = 0; i < MAX; i++) {
@@ -32,6 +33,7 @@ public class Streams3 {
         System.out.println(String.format("sequential sort took: %d ms", millis));
     }
 
+    // 并行排序所需要的时间
     public static void sortParallel() {
         List<String> values = new ArrayList<>(MAX);
         for (int i = 0; i < MAX; i++) {
@@ -54,6 +56,6 @@ public class Streams3 {
 
     public static void main(String[] args) {
         sortSequential();
-        sortParallel();
+        // sortParallel();
     }
 }
