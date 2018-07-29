@@ -341,6 +341,28 @@ personSupplier.get();   // new Person
 
 代码：com.winterbe.java8.samples.lambda.Lambda3
 
+例如：
+
+java8引入了一个对log方法的重载版本，这个版本的log方法接受一个Supplier作为参数。这个替代版本的log方法的函数签名如下：
+
+```
+public void log(Level level, Supplier<String> msgSupplier)
+你可以通过下面的方式对它进行调用：
+
+logger.log(Level.FINER, () -> "Problem: " + generateDiagnostic());
+如果日志器的级别设置恰当， log 方法会在内部才执行作为参数传递进来的Lambda表达式（注意：常规写法，先执行所有的入参方法，得到实参，再执行方法）。惰性求值，可以有效避免一些不必要的性能开销。
+
+
+这里介绍的 Log 方法的内部实现如下：
+public void log(Level level, Supplier<String> msgSupplier){
+    if(logger.isLoggable(level)){
+        log(level, msgSupplier.get());
+    }
+}
+```
+
+https://my.oschina.net/bairrfhoinn/blog/142985
+
 ### 消费 Consumers
 
 Consumers 表示对单个输入参数加工处理，并提供 andThen 'default'方法进行后续处理。

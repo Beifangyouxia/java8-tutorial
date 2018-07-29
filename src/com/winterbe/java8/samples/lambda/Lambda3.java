@@ -53,8 +53,12 @@ public class Lambda3 {
 
         // Suppliers
 
-        Supplier<Person> personSupplier = Person::new;
-        personSupplier.get(); // new Person
+        Supplier<Person> personSupplier = () -> new Person("Tom", "last");
+        System.out.println("Suppliers " + personSupplier.get().firstName);// new Person
+
+        Supplier<Person> personSupplier1 =Person::new;
+        System.out.println("Suppliers " + personSupplier1.get().firstName);// new Person
+
 
         // Consumers
 
