@@ -22,6 +22,10 @@ public class Lambda3 {
         void foo();
     }
 
+    static Person getPerson() {
+        return new Person("TOm1111", "tom lastename");
+    }
+
     public static void main(String[] args) throws Exception {
 
         // Predicates
@@ -53,12 +57,16 @@ public class Lambda3 {
 
         // Suppliers
 
-        Supplier<Person> personSupplier = () -> new Person("Tom", "last");
+        Supplier<Person> personSupplier = () -> {
+            return new Person("Tom", "last");
+        };
         System.out.println("Suppliers " + personSupplier.get().firstName);// new Person
 
-        Supplier<Person> personSupplier1 =Person::new;
+        Supplier<Person> personSupplier1 = Person::new;
         System.out.println("Suppliers " + personSupplier1.get().firstName);// new Person
 
+        Supplier<Person> personSupplier2 = Lambda3::getPerson;
+        System.out.println("Suppliers " + personSupplier2.get().firstName);// new Person
 
         // Consumers
 
