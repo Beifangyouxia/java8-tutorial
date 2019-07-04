@@ -17,6 +17,7 @@
   * [局部变量](#局部变量)
   * [访问全局变量或静态变量](#访问全局变量或静态变量)
   * [default方法](#default方法)
+* [方法引用](#方法引用)
 * [内置 Functional Interfaces](#内置-functional-interfaces)
   * [判断 Predicates](#判断-predicates)
   * [函数 Functions](#函数-functions)
@@ -284,6 +285,49 @@ lambda表达式语句不能直接访问default方法。下面写法编译不过�
 Formula formula = (a) -> sqrt(a * 100);
 ```
 
+## 方法引用
+
+方法引用和 lambda 表达式拥有相同的特性（例如，它们都需要一个目标类型，并需要被转化为函数式接口的实例），不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法。
+
+方法引用分三种情况：
+
+* 1）类+动态方法 
+* 2）类+静态方法 
+* 3）类实例对象+动态方法 
+* 4）类实例对象+静态方法(无效，不正确写法)
+
+```
+    public static void main(String[] args) {
+
+        // 1）类+动态方法
+        BiConsumer<LinkedHashSet, Object> biConsumer1 = LinkedHashSet::add;
+        LinkedHashSet s1 = new LinkedHashSet();
+        biConsumer1.accept(s1, "aaa");
+        System.out.println(s1);
+
+        // 2）类+静态方法
+        BiConsumer<String, Long> biConsumer2 = Utils::concatStatic;
+        biConsumer2.accept("first_param", 6L);
+
+        // 3）类实例对象+动态方法
+        BiConsumer<String, Long> biConsumer3 = new Utils()::concat;
+        biConsumer3.accept("first_param", 7L);
+
+        // 4）类实例对象+静态方法
+        // Error:(35, 48) java: 方法引用无效 ,静态限制范围方法引用
+        // BiConsumer<String, Long> biConsumer4 = new Utils()::concatStatic;
+        // biConsumer4.accept("first_param", 8L);
+
+    }
+```
+
+接收 int 参数的数组构造方法
+
+```
+IntFunction<int[]> arrayMaker = int[]::new;
+int[] array = arrayMaker.apply(10) // 创建数组 int[10]
+
+```
 
 ## 内置 Functional Interfaces
 

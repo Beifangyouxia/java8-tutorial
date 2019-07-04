@@ -18,7 +18,7 @@ public class Reduce1 {
         list.add(2);
         list.add(3);
 
-        // 方式一
+        // 方式一，底层实现同下面的
         int sum1 = list.stream().mapToInt(t -> t).sum();
         System.out.println(sum1);
 
