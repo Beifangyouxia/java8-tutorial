@@ -1,19 +1,13 @@
-# Modern Java -  Java 8 学习手册
-_原文出自 [my blog](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)._
+#  Java 8 学习手册
 
 > [“Java并没有没落，人们依然为之着迷”](https://twitter.com/mreinhold/status/429603588525281280)
 
 感谢你对 [Java 8](https://jdk8.java.net/)的关注。本文将指导你一步步了解该语言的新特性。 通过一些短而简单的代码示例，你可以快速上手 default interface methods, lambda expressions, method references and repeatable annotations。文章结尾，你可以了解常用的[API](http://download.java.net/jdk8/docs/api/) 有哪些调整， 比如 streams, functional interfaces, map extensions 以及 the new Date API。 **本文采用片段式讲解，而非长篇贴代码 。 请尽情享受!**
 
----
-
-<p align="center">
- ★★★ 如果喜欢的话? 请点下收藏 , <a href="https://twitter.com/winterbe_"> 关注 Twitter</a> or <a href="https://www.paypal.me/winterbe">捐赠</a> 鼓励我继续写下去。 谢谢! ★★★
-</p>
 
 ---
 
-## Table of Contents
+## 目录
 
 * [接口使用default方法](#接口使用default方法)
 * [Lambda表达式](#lambda表达式)
@@ -91,7 +85,7 @@ formula.sqrt(16);           // 4.0
 
 一个简单例子，对字符串集合排序
 
-```java
+```
 List<String> names = Arrays.asList("peter", "anna", "mike", "xenia");
 
 Collections.sort(names, new Comparator<String>() {
@@ -107,7 +101,7 @@ Collections.sort(names, new Comparator<String>() {
 为了替换匿名类实例，Java 8 引入一种非常简洁的语法， **lambda 表达式**:
 
 
-```java
+```
 Collections.sort(names, (String a, String b) -> {
     return b.compareTo(a);
 });
@@ -116,14 +110,14 @@ Collections.sort(names, (String a, String b) -> {
 当然你也可以采用更短更易读的写法，如上。
 
 
-```java
+```
 Collections.sort(names, (String a, String b) -> b.compareTo(a));
 ```
 
 可以进一步精简，只剩一行代码，省略`{}`和`return`方法，如上。
 
 
-```java
+```
 names.sort((a, b) -> b.compareTo(a));
 ```
 List类现在提供`sort`方法。同时java编译器能自动识别参数类型，所以编码时你可以忽略它们。接下来让我们深入学习lambda表达式如何广泛使用。
