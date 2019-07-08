@@ -1,11 +1,11 @@
-package com.winterbe.java8.samples.methodreference;
+package com.winterbe.java8.samples.functional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.winterbe.java8.samples.methodreference.util.Score;
+import com.winterbe.java8.samples.util.Score;
 
 /**
  * @author onlyone

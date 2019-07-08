@@ -1,9 +1,6 @@
-package com.winterbe.java8.samples.methodreference;
+package com.winterbe.java8.samples.functional;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.BinaryOperator;
 
 /**

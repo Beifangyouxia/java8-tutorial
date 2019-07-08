@@ -1,4 +1,4 @@
-package com.winterbe.java8.samples.methodreference;
+package com.winterbe.java8.samples.functional;
 
 import java.util.Arrays;
 import java.util.Comparator;

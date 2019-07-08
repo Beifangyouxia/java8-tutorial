@@ -1,4 +1,4 @@
-package com.winterbe.java8.samples.methodreference.util;
+package com.winterbe.java8.samples.util;
 
 /**
  * @author onlyone

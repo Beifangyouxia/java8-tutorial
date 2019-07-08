@@ -3,7 +3,7 @@ package com.winterbe.java8.samples.methodreference;
 import java.util.LinkedHashSet;
 import java.util.function.BiConsumer;
 
-import com.winterbe.java8.samples.methodreference.util.Utils;
+import com.winterbe.java8.samples.util.Utils;
 
 /**
  * <pre>
