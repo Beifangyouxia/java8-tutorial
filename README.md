@@ -24,6 +24,7 @@
   * [生产 Suppliers](#生产-suppliers)
   * [消费 Consumers](#消费-consumers)
   * [比较 Comparators](#比较-comparators)
+  * [其它的函数接口](#其它的函数接口)
 * [可选择 Optionals](#可选择-optionals)
 * [流 Streams](#流-streams)
   * [过滤 Filter](#过滤-filter)
@@ -451,7 +452,11 @@ System.out.println("先按语文由大到小，如果相等，按数学由大到
 list.forEach(System.out::println);
 ```
 
+### 其它的函数接口
 
+象BinaryOperator、等
+
+代码位置：com.winterbe.java8.samples.functional
 
 ## 可选择 Optionals
 
