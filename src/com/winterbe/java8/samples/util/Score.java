@@ -1,5 +1,7 @@
 package com.winterbe.java8.samples.util;
 
+import java.util.function.BiFunction;
+
 /**
  * @author onlyone
  */
@@ -8,6 +10,18 @@ public class Score {
     private String name;
     private Long   yuwen;
     private Long   shuxue;
+
+    public Score(){
+    }
+
+    public Score(String name){
+        this.name = name;
+    }
+
+    public Score(String name, Long yuwen) {
+        this.name = name;
+        this.yuwen = yuwen;
+    }
 
     public Score(String name, Long yuwen, Long shuxue){
         this.name = name;
@@ -37,6 +51,10 @@ public class Score {
 
     public void setShuxue(Long shuxue) {
         this.shuxue = shuxue;
+    }
+
+    public void printYuwenScore(BiFunction<String, Long, String> scoreFunction) {
+        System.out.println(scoreFunction.apply(name, yuwen));
     }
 
     @Override

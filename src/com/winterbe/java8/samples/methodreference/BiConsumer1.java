@@ -18,6 +18,7 @@ public class BiConsumer1 {
     public static void main(String[] args) {
 
         // 1）类+动态方法
+        // JDK默认会把当前实例传入到非静态方法，参数名为this，参数位置为第一个，所以我们在非静态方法中才能访问this，那么就可以通过BiConsumer传入实例对象进行实例方法的引用
         BiConsumer<LinkedHashSet, Object> biConsumer1 = LinkedHashSet::add;
         LinkedHashSet s1 = new LinkedHashSet();
         biConsumer1.accept(s1, "aaa");
