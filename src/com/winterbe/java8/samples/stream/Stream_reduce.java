@@ -2,11 +2,12 @@ package com.winterbe.java8.samples.stream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 /**
- * @author Benjamin Winterberg
+ * reduce方法各种场景
  */
-public class Streams11 {
+public class Stream_reduce {
 
     static class Person {
 
@@ -41,7 +42,7 @@ public class Streams11 {
         persons.stream().reduce((p1, p2) -> p1.age > p2.age ? p1 : p2).ifPresent(System.out::println); // Pamela
     }
 
-    // 对identity+stream列表进行函数表达式操作
+    // 所有的Person，name拼接，age相加
     private static void test2(List<Person> persons) {
         Person result = persons.stream().reduce(new Person("", 0), (p1, p2) -> {
             p1.age += p2.age;
@@ -52,9 +53,9 @@ public class Streams11 {
         System.out.format("name=%s; age=%s", result.name, result.age);
     }
 
-    // (sum1, sum2) -> sum1 + sum2)主要适用于并行，parallelStream（），单线程是无效的。
-    // 将流数据列表拆分多批，每批都执行 (sum, p) -> sum += p.age，得到局部的sum总和
-    // 最后通过 (sum1, sum2) -> sum1 + sum2)，计算最终的总和
+    // 将流数据列表拆分多批，sum初始为0，每批都执行 (sum, p) -> sum = sum + p.age，得到局部的sum总和
+    // 最后通过 (sum1, sum2) -> sum1 + sum2 ，计算最终的总和
+    // (sum1, sum2) -> sum1 + sum2，主要适用于并行，parallelStream（），单线程是无效的。
     private static void test3(List<Person> persons) {
         Integer ageSum = persons.stream().reduce(0, (sum, p) -> sum += p.age, (sum1, sum2) -> sum1 + sum2);
 
@@ -100,5 +101,15 @@ public class Streams11 {
         });
 
         System.out.println(ageSum);
+
+        // 运行结果：
+        // accumulator: sum=0; person=David; thread= ForkJoinPool.commonPool-worker-3
+        // accumulator: sum=0; person=Pamela; thread=main
+        // accumulator: sum=0; person=Peter; thread=ForkJoinPool.commonPool-worker-1
+        // accumulator: sum=0; person=Max; thread=ForkJoinPool.commonPool-worker-2
+        // combiner: sum1=18; sum2=23; thread=ForkJoinPool.commonPool-worker-2
+        // combiner: sum1=23; sum2=12; thread=main
+        // combiner: sum1=41; sum2=35; thread=main
+        // 76
     }
 }

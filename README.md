@@ -32,7 +32,7 @@
   * [映射 Map](#映射-map)
   * [匹配 Match](#匹配-match)
   * [计数 Count](#计数-count)
-  * [减少 Reduce](#减少-reduce)
+  * [降维 Reduce](#降维-reduce)
 * [并行 Streams](#并行-streams)
   * [串行 Sort](#串行-sort)
   * [并行 Sort](#并行-sort)
@@ -224,7 +224,7 @@ lambda表达式访问外部变量同匿名对象相似。你可以访问final修
 
 我们可以读取final修饰的本地变量
 
-```java
+```
 final int num = 1;
 Converter<Integer, String> stringConverter =
         (from) -> String.valueOf(from + num);
@@ -233,7 +233,7 @@ stringConverter.convert(2);     // 3
 ```
 与匿名对象不同，变量`num`不必强制一定用final修饰。下面写法也是有效的：
 
-```java
+```
 int num = 1;
 Converter<Integer, String> stringConverter =
         (from) -> String.valueOf(from + num);
@@ -243,7 +243,7 @@ stringConverter.convert(2);     // 3
 
 `num`在代码编译时必须是隐式的final类型。下面的写法编译会报错：
 
-```java
+```
 int num = 1;
 Converter<Integer, String> stringConverter =
         (from) -> String.valueOf(from + num);
@@ -254,7 +254,8 @@ num = 3;
 
 与局部变量相反，我们可以在lambda表达式中读或写全局变量或静态全局变量。
 
-```java
+```
+代码：com.winterbe.java8.samples.lambda.Lambda4
 class Lambda4 {
     static int outerStaticNum;
     int outerNum;
@@ -274,15 +275,13 @@ class Lambda4 {
 }
 ```
 
-代码：com.winterbe.java8.samples.lambda.Lambda4
-
 ### default方法
 
 还记得第一节的示例公式吗？`Formula`接口类中定义一个默认方法 `sqrt` ，它可以被每一个formula实例对象包括匿名对象访问。但这并适用于lambda表达式。
 
 lambda表达式语句不能直接访问default方法。下面写法编译不过：
 
-```java
+```
 Formula formula = (a) -> sqrt(a * 100);
 ```
 
@@ -341,7 +340,9 @@ JDK 1.8 API提供了许多内置的功能接口。其中一些来自Java旧版�
 
 Predicates内部定义了一个boolean类型判断方法，带有一个入参。这个接口还包含很多default方法满足各种复杂的逻辑表达式，如（与、或、非）
 
-```java
+```
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 Predicate<String> predicate = (s) -> s.length() > 0;
 
 predicate.test("foo");              // true
@@ -354,35 +355,31 @@ Predicate<String> isEmpty = String::isEmpty;
 Predicate<String> isNotEmpty = isEmpty.negate();
 ```
 
-代码：com.winterbe.java8.samples.lambda.Lambda3
-
 ### 函数 Functions
 
 函数接收一个入参并返回一个结果。`default`方法被用于将多个功能函数链接在一起，（compose 之前执行、andThen 之后执行）
 
+```
+代码：com.winterbe.java8.samples.lambda.Lambda3
 
-```java
 Function<String, Integer> toInteger = Integer::valueOf;
 Function<String, String> backToString = toInteger.andThen(String::valueOf);
 
 backToString.apply("123");     // "123"
 ```
-代码：com.winterbe.java8.samples.lambda.Lambda3
 
 ### 生产 Suppliers
 
 Suppliers 生产指定类型的结果。不同于Functions，Suppliers 不接受任何参数。
 
-```java
+```
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 Supplier<Person> personSupplier = Person::new;
 personSupplier.get();   // new Person
 ```
 
-代码：com.winterbe.java8.samples.lambda.Lambda3
-
-例如：
-
-java8引入了一个对log方法的重载版本，这个版本的log方法接受一个Supplier作为参数。这个替代版本的log方法的函数签名如下：
+案例：java8引入了一个对log方法的重载版本，这个版本的log方法接受一个Supplier作为参数。这个替代版本的log方法的函数签名如下：
 
 ```
 public void log(Level level, Supplier<String> msgSupplier)
@@ -390,7 +387,6 @@ public void log(Level level, Supplier<String> msgSupplier)
 
 logger.log(Level.FINER, () -> "Problem: " + generateDiagnostic());
 如果日志器的级别设置恰当， log 方法会在内部才执行作为参数传递进来的Lambda表达式（注意：常规写法，先执行所有的入参方法，得到实参，再执行方法）。惰性求值，可以有效避免一些不必要的性能开销。
-
 
 这里介绍的 Log 方法的内部实现如下：
 public void log(Level level, Supplier<String> msgSupplier){
@@ -406,19 +402,21 @@ https://my.oschina.net/bairrfhoinn/blog/142985
 
 Consumers 表示对单个输入参数加工处理，并提供 andThen 'default'方法进行后续处理。
 
-```java
+```
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 Consumer<Person> greeter = (p) -> System.out.println("Hello, " + p.firstName);
 greeter.accept(new Person("Luke", "Skywalker"));
 ```
-代码：com.winterbe.java8.samples.lambda.Lambda3
 
 ### 比较 Comparators
 
 Comparators 在Java老版本就已经存在。Java 8增加了各种各样的`default`方法
 
-代码：com.winterbe.java8.samples.lambda.Lambda3
 
 ```
+代码：com.winterbe.java8.samples.lambda.Lambda3
+
 Comparator<Person> comparator = (p1, p2) -> p1.firstName.compareTo(p2.firstName);
 
 Person p1 = new Person("John", "Doe");
@@ -430,9 +428,9 @@ comparator.reversed().compare(p1, p2);  // < 0
 
 Comparator与reversed组合使用，支持多字段的排序，默认由小到大，或由大到小
 
-代码：com.winterbe.java8.samples.methodreference.Comparator1
-
 ```
+代码：com.winterbe.java8.samples.functional.Comparator1
+
 List<Score> list = new ArrayList<>();
 list.add(new Score("xiaohong", 90L, 91L));
 list.add(new Score("xiaoming", 85L, 90L));
@@ -464,7 +462,9 @@ Optionals 不是一个函数式接口，主要是为了防止`NullPointerExcepti
 
 Optional是一个用于存放 null 或非null值的简易容器。试想，一个带返回值的方法有时会返回空。相反，Java 8 返回的是`Optional` ，而非 `null`。
 
-```java
+```
+代码：com.winterbe.java8.samples.stream.Optional1
+
 Optional<String> optional = Optional.of("bam");
 
 optional.isPresent();           // true
@@ -474,20 +474,16 @@ optional.orElse("fallback");    // "bam"
 optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 ```
 
-代码：com.winterbe.java8.samples.stream.Optional1
-
 ## 流 Streams
 
 `java.util.Stream` 可以对元素列表进行一次或多次操作。Stream操作可以是中间值也可以是最终结果。
 最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` like lists or sets (maps 并不支持)。Stream可以顺序执行，也可以并行执行。
 
-
-> Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。 **你可以直接拉代码  [Sequency](https://github.com/winterbe/sequency) **
+ Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。 **你可以直接拉代码  [Sequency](https://github.com/winterbe/sequency) **
 
 让我们看看顺序streams是如何运作的。首先我们创建String类型的List集合。
 
-
-```java
+```
 List<String> stringCollection = new ArrayList<>();
 stringCollection.add("ddd2");
 stringCollection.add("aaa2");
@@ -507,8 +503,7 @@ stringCollection.add("ddd1");
 
 Filter通过predicate判断函数来过滤所有的元素。这个操作是中间态的，直到我们触发另一个流操作`forEach`得到结果。ForEach 对每一个过滤后的元素执行consumer函数。ForEach是一个终止操作。返回类型是`void`，因为后面不能继续接受stream操作。
 
-
-```java
+```
 stringCollection
     .stream()
     .filter((s) -> s.startsWith("a"))
@@ -521,7 +516,7 @@ stringCollection
 
 Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按自然顺序排序。
 
-```java
+```
 stringCollection
     .stream()
     .sorted()
@@ -533,22 +528,22 @@ stringCollection
 
 记住 ，`sorted`只是创建流的排序视图，并没有改变原始集合的顺序。所以说`stringCollection`的顺序并没有改变。
 
-```java
+```
+代码：com.winterbe.java8.samples.stream.Streams2
+
 System.out.println(stringCollection);
 // ddd2, aaa2, bbb1, aaa1, bbb3, ccc, bbb2, ddd1
 ```
-代码：com.winterbe.java8.samples.stream.Streams2
 
 ### 映射 Map
 
 `map`是一种中间过程操作，借助函数表达式将元素转换成另一种形式。下面的例子将每个字符串转换成大写的字符串。但你也可以使用`map`将每个对象转换为另一种类型。最终输出的结果类型依赖于你传入的函数表达式。
 
-
-```java
+```
 stringCollection
     .stream()
     .map(String::toUpperCase)
-    .sorted((a, b) -> b.compareTo(a))
+    .sorted((a, b) -> b.compareTo(a))  //由大到小
     .forEach(System.out::println);
 
 // "DDD2", "DDD1", "CCC", "BBB3", "BBB2", "AAA2", "AAA1"
@@ -558,7 +553,7 @@ stringCollection
 
 各种匹配操作用于判断是否满足stream条件。所有的操作都完成后，返回一个boolean类型结果。
 
-```java
+```
 boolean anyStartsWithA =
     stringCollection
         .stream()
@@ -585,35 +580,40 @@ System.out.println(noneStartsWithZ);      // true
 
 Count是一个终止型操作，返回一个long类型的元素列表总数。
 
-```java
+```
 long startsWithB =
     stringCollection
         .stream()
         .filter((s) -> s.startsWith("b"))
         .count();
-
+        
 System.out.println(startsWithB);    // 3
 ```
 
 
-### 减少 Reduce
+### 降维 Reduce
 
-终止型操作，通过给定的函数表达式来处理流中的前后两个元素、或者中间结果与下一个元素。并将最终返回的结果放入`Optional`。
+终止型操作，通过给定的函数表达式来处理流中的前后两个元素，或者中间结果与下一个元素
 
-```java
-Optional<String> reduced =
-    stringCollection
-        .stream()
-        .sorted()
-        .reduce((s1, s2) -> s1 + "#" + s2);
+```
+代码：com.winterbe.java8.samples.stream.Stream_reduce
 
-reduced.ifPresent(System.out::println);
-// "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
+// 将流数据列表拆分多批，sum初始为0，每批都执行 (sum, p) -> sum = sum + p.age，得到局部的sum总和。并行计算思想
+// 最后通过 (sum1, sum2) -> sum1 + sum2 ，计算最终的总和
+// (sum1, sum2) -> sum1 + sum2，主要适用于并行，parallelStream（），单线程是无效的。
+
+private static void test3(List<Person> persons) {
+    Integer ageSum = persons.parallelStream().reduce(0, (sum, p) -> sum += p.age, (sum1, sum2) -> sum1 + sum2);
+    System.out.println(ageSum);
+}
 ```
 
 更多reduce用法可参考：https://blog.csdn.net/io_field/article/details/54971679
 
-代码：com.winterbe.java8.samples.stream.Streams11
+### Collectors类常用方法
+
+* d d d 
+
 
 ## 并行 Streams
 
@@ -623,7 +623,9 @@ reduced.ifPresent(System.out::println);
 
 首先我们创建一个大容量的List元素集合：
 
-```java
+```
+代码：com.winterbe.java8.samples.stream.Stream_reduce
+
 int max = 1000000;
 List<String> values = new ArrayList<>(max);
 for (int i = 0; i < max; i++) {
@@ -631,8 +633,6 @@ for (int i = 0; i < max; i++) {
     values.add(uuid.toString());
 }
 ```
-
-代码：com.winterbe.java8.samples.stream.Streams11
 
 现在我们测量对此集合的流排序所花费的时间。  
 
