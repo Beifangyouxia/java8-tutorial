@@ -29,10 +29,13 @@
 * [流 Streams](#流-streams)
   * [过滤 Filter](#过滤-filter)
   * [映射 Map](#映射-map)
+  * [映射 flatMap](#映射-flatMap)
   * [排序 Sorted](#排序-sorted)
   * [降维 Reduce](#降维-reduce)
   * [计数 Count](#计数-count)
   * [匹配 Match](#匹配-match)
+  * [跳过 skip](#跳过-skip)
+  * [输出 limit](#输出-limit)
   * [输出 collect](#输出-collect)
 * [并行 Streams](#并行-streams)
   * [串行 Sort](#串行-sort)
@@ -481,10 +484,13 @@ optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` ，比如 list or set (map 并不支持)。Stream可以顺序执行，也可以并行执行。
 
  Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。代码库  [Sequency](https://github.com/winterbe/sequency) 
+ 
+* 中间操作：filter、map、limit、sorted、distinct
+* 终止操作：forEach、count、collect、reduce
 
 ### 过滤 Filter
 
-Filter通过`predicate`判断函数来过滤所有的元素。这个操作是中间态的，需要通过终止操作才会触发执行。
+Filter通过`predicate`判断函数来过滤所有的元素。这个操作是中间操作，需要通过终止操作才会触发执行。
 
 ```
 代码：com.winterbe.java8.samples.stream.Stream_filter
@@ -509,6 +515,19 @@ stringCollection
 
 // "DDD2", "DDD1", "CCC", "BBB3", "BBB2", "AAA2", "AAA1"
 ```
+### 映射 flatMap
+
+如果涉及到一对多映射，需要将映射结果放入Stream中
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_flatMap
+
+List<String> lists = Arrays.asList("Hello", "World");
+lists.stream().flatMap(word-> Stream.of(word.split("")))
+        .distinct()
+        .forEach(System.out::println);
+```
+
 ### 排序 Sorted
 
 Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按默认的`由小到大`排序。
@@ -565,7 +584,6 @@ long startsWithB =
 System.out.println(startsWithB);    // 3
 ```
 
-
 ### 匹配 Match
 
 各种匹配操作用于判断是否满足stream条件。所有的操作都完成后，返回一个boolean类型结果。
@@ -594,10 +612,39 @@ boolean noneStartsWithZ =
 System.out.println(noneStartsWithZ);      // true
 ```
 
+### 跳过 skip
+
+返回一个扔掉前n个元素的流
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_skip
+// 扔掉前三个元素
+stringCollection
+    .stream()
+    .skip(3)
+    .forEach(System.out::println);
+
+```
+
+### 输出 limit
+
+只取前N个结果
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_limit
+// 取前三个元素
+stringCollection
+    .stream()
+    .limit(3)
+    .forEach(System.out::println);
+
+```
+
 ### 输出 collect
 
 通过传入不同的Collector实例，输出不同格式的结果
 
+* Collectors.toList，得到List列表
 * Collectors.joining ，通过`连接符`拼接字符串
 * Collectors.groupingBy(java.util.function.Function<? super T,? extends K>) ，按K值分组，返回Map\<K，List>
 * 
