@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Benjamin Winterberg
+ * @author onlyone
  */
-public class Streams2 {
-
+public class Stream_count {
     public static void main(String[] args) {
-
         List<String> stringCollection = new ArrayList<>();
         stringCollection.add("ddd2");
         stringCollection.add("aaa2");
@@ -20,18 +18,12 @@ public class Streams2 {
         stringCollection.add("bbb2");
         stringCollection.add("ddd1");
 
-
-        // sorting
-
-        stringCollection
+        // 总数
+        long startsWithB = stringCollection
                 .stream()
-                .sorted()
-                .forEach(System.out::println);
+                .filter((s) -> s.startsWith("b"))
+                .count();
 
-        System.out.println(stringCollection);
-
-        
-
+        System.out.println(startsWithB);    // 3
     }
-
 }

@@ -28,11 +28,11 @@
 * [可选择 Optionals](#可选择-optionals)
 * [流 Streams](#流-streams)
   * [过滤 Filter](#过滤-filter)
-  * [排序 Sorted](#排序-sorted)
   * [映射 Map](#映射-map)
-  * [匹配 Match](#匹配-match)
-  * [计数 Count](#计数-count)
+  * [排序 Sorted](#排序-sorted)
   * [降维 Reduce](#降维-reduce)
+  * [计数 Count](#计数-count)
+  * [匹配 Match](#匹配-match)
 * [并行 Streams](#并行-streams)
   * [串行 Sort](#串行-sort)
   * [并行 Sort](#并行-sort)
@@ -477,62 +477,22 @@ optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 ## 流 Streams
 
 `java.util.Stream` 可以对元素列表进行一次或多次操作。Stream操作可以是中间值也可以是最终结果。
-最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` like lists or sets (maps 并不支持)。Stream可以顺序执行，也可以并行执行。
+最后的操作返回的是某种类型结果，而中间操作返回的是stream本身。因此你可以在一行代码链接多个方法调用。Streams被创建于`java.util.Collection` ，比如 list or set (map 并不支持)。Stream可以顺序执行，也可以并行执行。
 
- Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。 **你可以直接拉代码  [Sequency](https://github.com/winterbe/sequency) **
-
-让我们看看顺序streams是如何运作的。首先我们创建String类型的List集合。
-
-```
-List<String> stringCollection = new ArrayList<>();
-stringCollection.add("ddd2");
-stringCollection.add("aaa2");
-stringCollection.add("bbb1");
-stringCollection.add("aaa1");
-stringCollection.add("bbb3");
-stringCollection.add("ccc");
-stringCollection.add("bbb2");
-stringCollection.add("ddd1");
-```
-
-在Java 8中，对Collections进行了扩展。你可以通过 `Collection.stream()` 或`Collection.parallelStream()`来创建一个streams。下文将介绍一些常见的流操作。
-
-代码：com.winterbe.java8.samples.stream.Streams1
+ Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。代码库  [Sequency](https://github.com/winterbe/sequency) 
 
 ### 过滤 Filter
 
-Filter通过predicate判断函数来过滤所有的元素。这个操作是中间态的，直到我们触发另一个流操作`forEach`得到结果。ForEach 对每一个过滤后的元素执行consumer函数。ForEach是一个终止操作。返回类型是`void`，因为后面不能继续接受stream操作。
+Filter通过`predicate`判断函数来过滤所有的元素。这个操作是中间态的，需要通过终止操作才会触发执行。
 
 ```
+代码：com.winterbe.java8.samples.stream.Stream_filter
 stringCollection
     .stream()
     .filter((s) -> s.startsWith("a"))
     .forEach(System.out::println);
 
 // "aaa2", "aaa1"
-```
-
-### 排序 Sorted
-
-Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按自然顺序排序。
-
-```
-stringCollection
-    .stream()
-    .sorted()
-    .filter((s) -> s.startsWith("a"))
-    .forEach(System.out::println);
-
-// "aaa1", "aaa2"
-```
-
-记住 ，`sorted`只是创建流的排序视图，并没有改变原始集合的顺序。所以说`stringCollection`的顺序并没有改变。
-
-```
-代码：com.winterbe.java8.samples.stream.Streams2
-
-System.out.println(stringCollection);
-// ddd2, aaa2, bbb1, aaa1, bbb3, ccc, bbb2, ddd1
 ```
 
 ### 映射 Map
@@ -548,48 +508,27 @@ stringCollection
 
 // "DDD2", "DDD1", "CCC", "BBB3", "BBB2", "AAA2", "AAA1"
 ```
+### 排序 Sorted
 
-### 匹配 Match
-
-各种匹配操作用于判断是否满足stream条件。所有的操作都完成后，返回一个boolean类型结果。
-
-```
-boolean anyStartsWithA =
-    stringCollection
-        .stream()
-        .anyMatch((s) -> s.startsWith("a"));
-
-System.out.println(anyStartsWithA);      // true
-
-boolean allStartsWithA =
-    stringCollection
-        .stream()
-        .allMatch((s) -> s.startsWith("a"));
-
-System.out.println(allStartsWithA);      // false
-
-boolean noneStartsWithZ =
-    stringCollection
-        .stream()
-        .noneMatch((s) -> s.startsWith("z"));
-
-System.out.println(noneStartsWithZ);      // true
-```
-
-#### 计数 Count
-
-Count是一个终止型操作，返回一个long类型的元素列表总数。
+Sorted是一个中间态操作，它返回流的有序视图。 除非你传递自定义的`Comparator`，否则元素按默认的`由小到大`排序。
 
 ```
-long startsWithB =
-    stringCollection
-        .stream()
-        .filter((s) -> s.startsWith("b"))
-        .count();
-        
-System.out.println(startsWithB);    // 3
+代码：com.winterbe.java8.samples.stream.Stream_sorted
+
+//默认排序
+stringCollection.stream().sorted().forEach(System.out::println);
+System.out.println(stringCollection);
+特别注意：`sorted`只是创建流的排序视图，并没有改变原始集合的顺序。所以说`stringCollection`的顺序并没有改变。
 ```
 
+```
+//自定义排序，按字符串，由大到小
+stringCollection
+        .stream()
+        .map(String::toUpperCase)
+        .sorted((a, b) -> b.compareTo(a))
+        .forEach(System.out::println);
+```
 
 ### 降维 Reduce
 
@@ -610,7 +549,51 @@ private static void test3(List<Person> persons) {
 
 更多reduce用法可参考：https://blog.csdn.net/io_field/article/details/54971679
 
-### Collectors类常用方法
+#### 计数 Count
+
+Count是一个终止型操作，返回一个long类型的元素列表总数。
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_count
+long startsWithB =
+    stringCollection
+        .stream()
+        .filter((s) -> s.startsWith("b"))
+        .count();
+        
+System.out.println(startsWithB);    // 3
+```
+
+
+### 匹配 Match
+
+各种匹配操作用于判断是否满足stream条件。所有的操作都完成后，返回一个boolean类型结果。
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_match
+boolean anyStartsWithA =
+    stringCollection
+        .stream()
+        .anyMatch((s) -> s.startsWith("a"));
+        
+System.out.println(anyStartsWithA);      // true
+
+boolean allStartsWithA =
+    stringCollection
+        .stream()
+        .allMatch((s) -> s.startsWith("a"));
+
+System.out.println(allStartsWithA);      // false
+
+boolean noneStartsWithZ =
+    stringCollection
+        .stream()
+        .noneMatch((s) -> s.startsWith("z"));
+
+System.out.println(noneStartsWithZ);      // true
+```
+
+### 结果输出 Collectors
 
 * d d d 
 

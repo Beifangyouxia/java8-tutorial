@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class Collect1 {
 
     public static void main(String[] args) {
+
         // 将字符串换成大写并用逗号链接起来
         List<String> G7 = Arrays.asList("USA", "Japan", "France");
         String G7Countries = G7.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));

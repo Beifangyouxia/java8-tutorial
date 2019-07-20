@@ -1,8 +1,8 @@
 package com.winterbe.java8.samples.stream;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
 
 /**
  * reduce方法各种场景
@@ -28,13 +28,13 @@ public class Stream_reduce {
     public static void main(String[] args) {
         List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23),
                                              new Person("David", 12));
-
+        test7();
         // test1(persons);
         // test2(persons);
         // test3(persons);
         // test4(persons);
         // test5(persons);
-        test6(persons);
+        // test6(persons);
     }
 
     // 找到age最大的Person
@@ -112,4 +112,27 @@ public class Stream_reduce {
         // combiner: sum1=41; sum2=35; thread=main
         // 76
     }
+
+    private static void test7() {
+        List<String> stringCollection = new ArrayList<>();
+        stringCollection.add("ddd2");
+        stringCollection.add("aaa2");
+        stringCollection.add("bbb1");
+        stringCollection.add("aaa1");
+        stringCollection.add("bbb3");
+        stringCollection.add("ccc");
+        stringCollection.add("bbb2");
+        stringCollection.add("ddd1");
+        Optional<String> reduced = stringCollection.stream().sorted().reduce((s1, s2) -> s1 + "#" + s2);
+
+        reduced.ifPresent(System.out::println);
+        // "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
+
+        OptionalInt reduced1 = IntStream.range(0, 10).reduce((a, b) -> a + b);
+        System.out.println(reduced1.getAsInt());
+
+        int reduced2 = IntStream.range(0, 10).reduce(7, (a, b) -> a + b);
+        System.out.println(reduced2);
+    }
+
 }

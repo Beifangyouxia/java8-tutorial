@@ -5,9 +5,9 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 
 /**
- * @author onlyone
+ * 计算的统计摘要方法
  */
-public class SummaryStatistics1 {
+public class IntStream_summaryStatistics {
 
     public static void main(String[] args) {
 
@@ -16,12 +16,9 @@ public class SummaryStatistics1 {
         // 获取数字的个数、最小值、最大值、总和以及平均值
         IntSummaryStatistics stats = primes.stream().mapToInt(x -> x).summaryStatistics();
 
-        System.out.println("Highest prime number in List : " + stats.getMax());
-
-        System.out.println("Lowest prime number in List : " + stats.getMin());
-
-        System.out.println("Sum of all prime numbers : " + stats.getSum());
-
-        System.out.println("Average of all prime numbers : " + stats.getAverage());
+        System.out.println("最大值 : " + stats.getMax());
+        System.out.println("最小值 : " + stats.getMin());
+        System.out.println("总和 : " + stats.getSum());
+        System.out.println("平均值 : " + stats.getAverage());
     }
 }
