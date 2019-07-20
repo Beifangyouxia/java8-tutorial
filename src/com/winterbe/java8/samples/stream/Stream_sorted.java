@@ -18,7 +18,6 @@ public class Stream_sorted {
     }
 
     private static void test1(){
-
         List<String> stringCollection = new ArrayList<>();
         stringCollection.add("ddd2");
         stringCollection.add("aaa2");
@@ -57,7 +56,6 @@ public class Stream_sorted {
 
         //按语文由大到小
         list.stream().sorted(Comparator.comparing(Score::getYuwen).reversed()).forEach(System.out::println);
-
     }
 
 }

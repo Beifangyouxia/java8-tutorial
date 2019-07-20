@@ -28,13 +28,13 @@ public class Stream_reduce {
     public static void main(String[] args) {
         List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23),
                                              new Person("David", 12));
-        test7();
         // test1(persons);
         // test2(persons);
         // test3(persons);
         // test4(persons);
         // test5(persons);
         // test6(persons);
+        test7();
     }
 
     // 找到age最大的Person
@@ -128,9 +128,11 @@ public class Stream_reduce {
         reduced.ifPresent(System.out::println);
         // "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
 
+        // 求和
         OptionalInt reduced1 = IntStream.range(0, 10).reduce((a, b) -> a + b);
         System.out.println(reduced1.getAsInt());
 
+        // 求和，并带初始值
         int reduced2 = IntStream.range(0, 10).reduce(7, (a, b) -> a + b);
         System.out.println(reduced2);
     }

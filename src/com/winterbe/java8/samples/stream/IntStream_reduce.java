@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author onlyone
- */
-public class Reduce1 {
+public class IntStream_reduce {
 
     /**
      * 求和

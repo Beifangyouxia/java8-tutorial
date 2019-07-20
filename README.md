@@ -33,6 +33,7 @@
   * [降维 Reduce](#降维-reduce)
   * [计数 Count](#计数-count)
   * [匹配 Match](#匹配-match)
+  * [输出 collect](#输出-collect)
 * [并行 Streams](#并行-streams)
   * [串行 Sort](#串行-sort)
   * [并行 Sort](#并行-sort)
@@ -593,9 +594,13 @@ boolean noneStartsWithZ =
 System.out.println(noneStartsWithZ);      // true
 ```
 
-### 结果输出 Collectors
+### 输出 collect
 
-* d d d 
+通过传入不同的Collector实例，输出不同格式的结果
+
+* Collectors.joining ，通过`连接符`拼接字符串
+* Collectors.groupingBy(java.util.function.Function<? super T,? extends K>) ，按K值分组，返回Map\<K，List>
+* 
 
 
 ## 并行 Streams
