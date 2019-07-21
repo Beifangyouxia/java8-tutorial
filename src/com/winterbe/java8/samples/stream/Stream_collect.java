@@ -20,12 +20,13 @@ public class Stream_collect {
 
         // test1();
         // test2(studentList);
-        test5(studentList);
         // test3(studentList);
-        // test4(studentList);
+        test4(studentList);
+        // test5(studentList);
+        // test6(studentList);
     }
 
-    // 将字符串换成大写并用逗号链接起来
+    // 将字符串换成大写，并用逗号连接起来
     private static void test1() {
         List<String> citys = Arrays.asList("USA", "Japan", "France");
         String cityS = citys.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));
@@ -39,7 +40,7 @@ public class Stream_collect {
     }
 
     // 先按性别分组，然后再按年龄段分组
-    private static void test5(List<Student> studentList) {
+    private static void test3(List<Student> studentList) {
         Map<String, Map<String, List<Student>>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex,
                                                                                                           Collectors.groupingBy(s -> {
                                                                                                               if (s.getAge() < 20) {
@@ -51,8 +52,20 @@ public class Stream_collect {
         System.out.println(maps);
     }
 
+    // 按年龄25分成两个组
+    private static void test4(List<Student> studentList) {
+        Map<Boolean, List<Student>> maps = studentList.stream().collect(Collectors.partitioningBy(s -> {
+            if (s.getAge() < 25) {
+                return true;
+            } else {
+                return false;
+            }
+        }));
+        System.out.println(maps);
+    }
+
     // 找出年龄最大的人
-    private static void test3(List<Student> studentList) {
+    private static void test5(List<Student> studentList) {
         Optional<Student> optional1 = studentList.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));
         optional1.ifPresent(System.out::println);
 
@@ -62,7 +75,7 @@ public class Stream_collect {
     }
 
     // 年龄总和
-    private static void test4(List<Student> studentList) {
+    private static void test6(List<Student> studentList) {
         // reducing的参数，第一个：初始值。第二个：转换函数。第三个：累积函数
         int sum = studentList.stream().collect(Collectors.reducing(0, Student::getAge, Integer::sum));
         System.out.println(sum);

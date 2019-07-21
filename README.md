@@ -663,9 +663,11 @@ stringCollection
 Collectors常见方法：
 
 * Collectors.toList，得到List列表
+* Collectors.toSet，得到Set集合
 * Collectors.joining ，通过`连接符`拼接字符串
 * Collectors.groupingBy(Function<? super T,? extends K>) ，按K值分组，返回Map<K，List>
 * Collectors.groupingBy(Function<? super T,? extends K>, Collector<? super T,A,D>)，二级分组，得到两级Map
+* Collectors.partitioningBy(Predicate<? super T> predicate) ，分区是分组的特殊情况，返回一个布尔值，意味着得到的分组Map的key只能是Boolean，于是它最多可以分为两组
 * Collectors.maxBy，求最大值，需要传一个自定义的Comparator
 * Collectors.reducing，广义的归约汇总。
 
@@ -673,7 +675,7 @@ Collectors常见方法：
 ```
 代码：com.winterbe.java8.samples.stream.Stream_collect
 
-// 将字符串换成大写，并用逗号链接起来
+// 将字符串换成大写，并用逗号连接起来
 List<String> citys = Arrays.asList("USA", "Japan", "France");
 String cityS = citys.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));
         
@@ -690,6 +692,15 @@ Map<String, Map<String, List<Student>>> maps = studentList.stream()
               return "高age";
           }
       })));
+
+// 按年龄25分成两个组
+Map<Boolean, List<Student>> maps = studentList.stream().collect(Collectors.partitioningBy(s -> {
+    if (s.getAge() < 25) {
+        return true;
+    } else {
+        return false;
+    }
+}));
 
 // 找出年龄最大的人
 Optional<Student> optional1 = studentList.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));
