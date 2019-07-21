@@ -20,8 +20,9 @@ public class Stream_collect {
 
         // test1();
         // test2(studentList);
+        test5(studentList);
         // test3(studentList);
-        test4(studentList);
+        // test4(studentList);
     }
 
     // 将字符串换成大写并用逗号链接起来
@@ -34,6 +35,19 @@ public class Stream_collect {
     // 按性别分组
     private static void test2(List<Student> studentList) {
         Map<String, List<Student>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex));
+        System.out.println(maps);
+    }
+
+    // 先按性别分组，然后再按年龄段分组
+    private static void test5(List<Student> studentList) {
+        Map<String, Map<String, List<Student>>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex,
+                                                                                                          Collectors.groupingBy(s -> {
+                                                                                                              if (s.getAge() < 20) {
+                                                                                                                  return "低age";
+                                                                                                              } else {
+                                                                                                                  return "高age";
+                                                                                                              }
+                                                                                                          })));
         System.out.println(maps);
     }
 

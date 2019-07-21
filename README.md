@@ -664,7 +664,8 @@ Collectors常见方法：
 
 * Collectors.toList，得到List列表
 * Collectors.joining ，通过`连接符`拼接字符串
-* Collectors.groupingBy(Function<? super T,? extends K>) ，按K值分组，返回Map\<K，List>
+* Collectors.groupingBy(Function<? super T,? extends K>) ，按K值分组，返回Map<K，List>
+* Collectors.groupingBy(Function<? super T,? extends K>, Collector<? super T,A,D>)，二级分组，得到两级Map
 * Collectors.maxBy，求最大值，需要传一个自定义的Comparator
 * Collectors.reducing，广义的归约汇总。
 
@@ -672,12 +673,23 @@ Collectors常见方法：
 ```
 代码：com.winterbe.java8.samples.stream.Stream_collect
 
-// 将字符串换成大写并用逗号链接起来
+// 将字符串换成大写，并用逗号链接起来
 List<String> citys = Arrays.asList("USA", "Japan", "France");
 String cityS = citys.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));
         
 // 按性别分组
 Map<String, List<Student>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex));
+
+// 先按性别分组，然后再按年龄段分组
+Map<String, Map<String, List<Student>>> maps = studentList.stream()
+   .collect(Collectors.groupingBy(Student::getSex,
+      Collectors.groupingBy(s -> {
+          if (s.getAge() < 20) {
+              return "低age";
+          } else {
+              return "高age";
+          }
+      })));
 
 // 找出年龄最大的人
 Optional<Student> optional1 = studentList.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));
