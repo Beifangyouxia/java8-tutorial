@@ -139,14 +139,14 @@ lambda表达式是如何识别Java的系统类型？每个lambda对应一个由�
 
 示例:
 
-```java
+```
 @FunctionalInterface
 interface Converter<F, T> {
     T convert(F from);
 }
 ```
 
-```java
+```
 Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
 Integer converted = converter.convert("123");
 System.out.println(converted);    // 123
@@ -160,7 +160,7 @@ System.out.println(converted);    // 123
 
 上面的代码示例可以采用静态方法引用进一步简化：
 
-```java
+```
 Converter<String, Integer> converter = Integer::valueOf;
 Integer converted = converter.convert("123");
 System.out.println(converted);   // 123
@@ -169,7 +169,7 @@ System.out.println(converted);   // 123
 Java 8允许你通过方法或构造器的引用，如 `::` 。上面示例演示了引用一个静态方法。另外我们也可以用类实例对象的方法。
 
 
-```java
+```
 class Something {
     String startsWith(String s) {
         return String.valueOf(s.charAt(0));
@@ -177,7 +177,7 @@ class Something {
 }
 ```
 
-```java
+```
 Something something = new Something();
 Converter<String, String> converter = something::startsWith;
 String converted = converter.convert("Java");
@@ -187,7 +187,7 @@ System.out.println(converted);    // "J"
 让我们了解下 `::` 字键字如何用在构造器中。首先定义一个类如下结构：
 
 
-```java
+```
 class Person {
     String firstName;
     String lastName;
@@ -203,7 +203,7 @@ class Person {
 
 接下来，我们定义一个person工厂接口，用于创建新的persons：
 
-```java
+```
 interface PersonFactory<P extends Person> {
     P create(String firstName, String lastName);
 }
@@ -211,7 +211,7 @@ interface PersonFactory<P extends Person> {
 
 与传统的实现方式不同，我们通过调用构造器方法来实现：
 
-```java
+```
 PersonFactory<Person> personFactory = Person::new;
 Person person = personFactory.create("Peter", "Parker");
 ```
