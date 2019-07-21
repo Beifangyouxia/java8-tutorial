@@ -31,7 +31,8 @@
   * [映射 Map](#映射-map)
   * [映射 flatMap](#映射-flatMap)
   * [排序 Sorted](#排序-sorted)
-  * [降维 Reduce](#降维-reduce)
+  * [归约 Reduce](#归约-reduce)
+
   * [计数 Count](#计数-count)
   * [匹配 Match](#匹配-match)
   * [跳过 skip](#跳过-skip)
@@ -485,8 +486,9 @@ optional.ifPresent((s) -> System.out.println(s.charAt(0)));     // "b"
 
  Streams 非常强大， 因此我单独写了一篇文章介绍 [Java 8 Streams Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)。代码库  [Sequency](https://github.com/winterbe/sequency) 
  
-* 中间操作：filter、map、limit、sorted、distinct
-* 终止操作：forEach、count、collect、reduce
+* 中间操作：filter、map、mapToInt、mapToLong、mapToDouble、flatMap、sorted、distinct、limit、skip、of、iterate
+* 终止操作：forEach、count、collect、reduce、toArray、anyMatch、allMatch、noneMatch、findAny、findFirst、max、min
+* 原始类型特化流：IntStream、LongStream、DoubleStream
 
 ### 过滤 Filter
 
@@ -517,7 +519,7 @@ stringCollection
 ```
 ### 映射 flatMap
 
-如果涉及到一对多映射，需要将映射结果放入Stream中
+如果涉及到一对多映射，需要将映射结果放入Stream中。使用flatMap方法的效果是，转换后的多个结果并不是分别映射成一个流，而是映射成流的内容。
 
 ```
 代码：com.winterbe.java8.samples.stream.Stream_flatMap
@@ -550,9 +552,9 @@ stringCollection
         .forEach(System.out::println);
 ```
 
-### 降维 Reduce
+### 归约 Reduce
 
-终止型操作，通过给定的函数表达式来处理流中的前后两个元素，或者中间结果与下一个元素
+终止型操作，通过给定的函数表达式来处理流中的前后两个元素，或者中间结果与下一个元素。Lambda 反复结合每一个元素，直到流被归约成一个值。例如求和或查找最大元素。
 
 ```
 代码：com.winterbe.java8.samples.stream.Stream_reduce
@@ -590,26 +592,35 @@ System.out.println(startsWithB);    // 3
 
 ```
 代码：com.winterbe.java8.samples.stream.Stream_match
-boolean anyStartsWithA =
-    stringCollection
-        .stream()
-        .anyMatch((s) -> s.startsWith("a"));
-        
-System.out.println(anyStartsWithA);      // true
+List<String> stringCollection = new ArrayList<>();
+stringCollection.add("ddd2");
+stringCollection.add("aaa2");
+stringCollection.add("bbb1");
+stringCollection.add("aaa1");
+stringCollection.add("bbb3");
+stringCollection.add("ccc");
+stringCollection.add("bbb2");
+stringCollection.add("ddd1");
 
-boolean allStartsWithA =
-    stringCollection
-        .stream()
-        .allMatch((s) -> s.startsWith("a"));
+// 只需要一个条件满足
+boolean anyStartsWithA = stringCollection.stream().anyMatch((s) -> s.startsWith("a"));
+System.out.println("anyMatch：" + anyStartsWithA); // true
 
-System.out.println(allStartsWithA);      // false
+// 所有条件都要满足
+boolean allStartsWithA = stringCollection.stream().allMatch((s) -> s.startsWith("a"));
+System.out.println("allMatch：" + allStartsWithA); // false
 
-boolean noneStartsWithZ =
-    stringCollection
-        .stream()
-        .noneMatch((s) -> s.startsWith("z"));
+// 所有的条件都要不满足
+boolean noneStartsWithZ = stringCollection.stream().noneMatch((s) -> s.startsWith("z"));
+System.out.println("noneMatch：" + noneStartsWithZ); // true
 
-System.out.println(noneStartsWithZ);      // true
+// 返回任意一个元素
+Optional<String> anyE = stringCollection.stream().findAny();
+System.out.println("findAny：" + anyE.get());
+
+//返回第一个元素
+Optional<String> firstE = stringCollection.stream().findFirst();
+System.out.println("findFirst：" + firstE.get());
 ```
 
 ### 跳过 skip
@@ -642,12 +653,41 @@ stringCollection
 
 ### 输出 collect
 
-通过传入不同的Collector实例，输出不同格式的结果
+接受各种做法作为参数，将流中的元素累积成一个汇总结果
+
+常见例子：
+
+* 对一个交易列表按货币分组，获得该货币的所有交易额总和（返回一个Map\<Currency，Integer>）
+* 将交易列表分成两组，贵的和不贵的（返回一个Map<Boolean，List\<Transaction>>）
+* 创建多级分组，比如按城市对交易分组，然后进一步按照贵的或不贵分组
+
+Collectors常见方法：
 
 * Collectors.toList，得到List列表
 * Collectors.joining ，通过`连接符`拼接字符串
-* Collectors.groupingBy(java.util.function.Function<? super T,? extends K>) ，按K值分组，返回Map\<K，List>
-* 
+* Collectors.groupingBy(Function<? super T,? extends K>) ，按K值分组，返回Map\<K，List>
+* Collectors.maxBy，求最大值，需要传一个自定义的Comparator
+* Collectors.reducing，广义的归约汇总。
+
+
+```
+代码：com.winterbe.java8.samples.stream.Stream_collect
+
+// 将字符串换成大写并用逗号链接起来
+List<String> citys = Arrays.asList("USA", "Japan", "France");
+String cityS = citys.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(", "));
+        
+// 按性别分组
+Map<String, List<Student>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex));
+
+// 找出年龄最大的人
+Optional<Student> optional1 = studentList.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)));
+optional1.ifPresent(System.out::println);
+
+// 年龄总和
+// reducing的参数，第一个：初始值。第二个：转换函数。第三个：累积函数
+int sum = studentList.stream().collect(Collectors.reducing(0, Student::getAge, Integer::sum));
+```
 
 
 ## 并行 Streams

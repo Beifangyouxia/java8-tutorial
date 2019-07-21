@@ -1,5 +1,8 @@
 package com.winterbe.java8.samples.stream;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
@@ -9,24 +12,17 @@ import java.util.stream.IntStream;
  */
 public class Stream_reduce {
 
+    @Data
+    @AllArgsConstructor
     static class Person {
 
         String name;
         int    age;
 
-        Person(String name, int age){
-            this.name = name;
-            this.age = age;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 
     public static void main(String[] args) {
-        List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23),
+        List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Peter", 28), new Person("Pamela", 23),
                                              new Person("David", 12));
         // test1(persons);
         // test2(persons);
@@ -37,9 +33,12 @@ public class Stream_reduce {
         test7();
     }
 
-    // 找到age最大的Person
+    // age最大的Person
     private static void test1(List<Person> persons) {
         persons.stream().reduce((p1, p2) -> p1.age > p2.age ? p1 : p2).ifPresent(System.out::println); // Pamela
+
+        // 另一种写法
+        persons.stream().max(Comparator.comparing(Person::getAge)).ifPresent(System.out::println);
     }
 
     // 所有的Person，name拼接，age相加
@@ -124,7 +123,6 @@ public class Stream_reduce {
         stringCollection.add("bbb2");
         stringCollection.add("ddd1");
         Optional<String> reduced = stringCollection.stream().sorted().reduce((s1, s2) -> s1 + "#" + s2);
-
         reduced.ifPresent(System.out::println);
         // "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
 
@@ -135,6 +133,11 @@ public class Stream_reduce {
         // 求和，并带初始值
         int reduced2 = IntStream.range(0, 10).reduce(7, (a, b) -> a + b);
         System.out.println(reduced2);
+
+        // 求和，并带初始值，另一种写法
+        int reduced3 = IntStream.range(0, 10).reduce(7, Integer::sum);
+        System.out.println(reduced3);
+
     }
 
 }

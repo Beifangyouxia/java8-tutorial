@@ -21,25 +21,25 @@ public class Stream_match {
         stringCollection.add("bbb2");
         stringCollection.add("ddd1");
 
+        // 只需要一个条件满足
+        boolean anyStartsWithA = stringCollection.stream().anyMatch((s) -> s.startsWith("a"));
+        System.out.println("anyMatch：" + anyStartsWithA); // true
 
-        boolean anyStartsWithA = stringCollection
-                .stream()
-                .anyMatch((s) -> s.startsWith("a")); //只需要一个条件满足
+        // 所有条件都要满足
+        boolean allStartsWithA = stringCollection.stream().allMatch((s) -> s.startsWith("a"));
+        System.out.println("allMatch：" + allStartsWithA); // false
 
-        System.out.println(anyStartsWithA);      // true
+        // 所有的条件都要不满足
+        boolean noneStartsWithZ = stringCollection.stream().noneMatch((s) -> s.startsWith("z"));
+        System.out.println("noneMatch：" + noneStartsWithZ); // true
 
-        boolean allStartsWithA = stringCollection
-                .stream()
-                .allMatch((s) -> s.startsWith("a")); //所有条件都要满足
+        // 返回任意一个元素
+        Optional<String> anyE = stringCollection.stream().findAny();
+        System.out.println("findAny：" + anyE.get());
 
-        System.out.println(allStartsWithA);      // false
-
-        boolean noneStartsWithZ = stringCollection
-                .stream()
-                .noneMatch((s) -> s.startsWith("z"));  //所有的条件都要不满足
-
-        System.out.println(noneStartsWithZ);      // true
-
+        //返回第一个元素
+        Optional<String> firstE = stringCollection.stream().findFirst();
+        System.out.println("findFirst：" + firstE.get());
 
     }
 
