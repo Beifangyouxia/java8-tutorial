@@ -1,11 +1,9 @@
 #  Java 8 学习手册
 
-> [“Java并没有没落，人们依然为之着迷”](https://twitter.com/mreinhold/status/429603588525281280)
+`java8越来越普及，里面提供了很多新的API，大大提高了我们日常的编码效率，本文对java8的一些新特性做了简单归纳，并附有代码示例`
 
-感谢你对 [Java 8](https://jdk8.java.net/)的关注。本文将指导你一步步了解该语言的新特性。 通过一些短而简单的代码示例，你可以快速上手 default interface methods, lambda expressions, method references and repeatable annotations。文章结尾，你可以了解常用的[API](http://download.java.net/jdk8/docs/api/) 有哪些调整， 比如 streams, functional interfaces, map extensions 以及 the new Date API。 **本文采用片段式讲解，而非长篇贴代码 。 请尽情享受!**
+代码示例：https://github.com/aalansehaiyang/java8-tutorial
 
-
----
 
 ## 目录
 
@@ -48,7 +46,6 @@
   * [本地日期](#本地日期)
   * [本地日期时间](#本地日期时间)
 * [注解](#注解)
-* [后续计划](#后续计划)
 
 
 ## 接口使用default方法
@@ -1041,21 +1038,3 @@ System.out.println(hints2.length);          // 2
 @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
 @interface MyAnnotation {}
 ```
-
-## 后续计划
-
-我的Java 8 编程指南到这里就结束了。如果你想了解有关JDK 8 API的所有新类及功能特性，下载代码[JDK8 API Explorer](http://winterbe.com/projects/java8-explorer/)。它会帮助你找到所有新增的类，如`Arrays.parallelSort`, `StampedLock` 以及 `CompletableFuture`，仅举几例。
-
-后续精彩文章请关注我的 [博客](http://winterbe.com) ，有你感兴趣的内容:
-
-- [Java 8 Stream Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)
-- [Java 8 Nashorn Tutorial](http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/)
-- [Java 8 Concurrency Tutorial: Threads and Executors](http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-- [Java 8 Concurrency Tutorial: Synchronization and Locks](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
-- [Java 8 Concurrency Tutorial: Atomic Variables and ConcurrentMap](http://winterbe.com/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
-- [Java 8 API by Example: Strings, Numbers, Math and Files](http://winterbe.com/posts/2015/03/25/java8-examples-string-number-math-files/)
-- [Avoid Null Checks in Java 8](http://winterbe.com/posts/2015/03/15/avoid-null-checks-in-java/)
-- [Fixing Java 8 Stream Gotchas with IntelliJ IDEA](http://winterbe.com/posts/2015/03/05/fixing-java-8-stream-gotchas-with-intellij-idea/)
-- [Using Backbone.js with Java 8 Nashorn](http://winterbe.com/posts/2014/04/07/using-backbonejs-with-nashorn/)
-
-[关注我的Twitter](https://twitter.com/winterbe_)。感谢阅读！
