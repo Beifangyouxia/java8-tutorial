@@ -1038,3 +1038,9 @@ System.out.println(hints2.length);          // 2
 @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
 @interface MyAnnotation {}
 ```
+
+## 写在最后
+
+**收到一些热衷于技术的同学反馈，考虑github实时通知不是特别好，以后时间里，一些技术经验总结、心得体会，会不定期同步一份到微信公众号上，欢迎关注，多多交流，共同进步**
+
+![image](img/qrcode_for_gh_4461eb8b8689_258.jpg)
