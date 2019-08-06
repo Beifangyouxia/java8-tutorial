@@ -21,9 +21,11 @@ public class Stream_collect {
         // test1();
         // test2(studentList);
         // test3(studentList);
-        test4(studentList);
+//        test4(studentList);
         // test5(studentList);
         // test6(studentList);
+//        test7(studentList);
+        test8(studentList);
     }
 
     // 将字符串换成大写，并用逗号连接起来
@@ -42,13 +44,13 @@ public class Stream_collect {
     // 先按性别分组，然后再按年龄段分组
     private static void test3(List<Student> studentList) {
         Map<String, Map<String, List<Student>>> maps = studentList.stream().collect(Collectors.groupingBy(Student::getSex,
-                                                                                                          Collectors.groupingBy(s -> {
-                                                                                                              if (s.getAge() < 20) {
-                                                                                                                  return "低age";
-                                                                                                              } else {
-                                                                                                                  return "高age";
-                                                                                                              }
-                                                                                                          })));
+                Collectors.groupingBy(s -> {
+                    if (s.getAge() < 20) {
+                        return "低age";
+                    } else {
+                        return "高age";
+                    }
+                })));
         System.out.println(maps);
     }
 
@@ -79,5 +81,27 @@ public class Stream_collect {
         // reducing的参数，第一个：初始值。第二个：转换函数。第三个：累积函数
         int sum = studentList.stream().collect(Collectors.reducing(0, Student::getAge, Integer::sum));
         System.out.println(sum);
+    }
+
+    // 转换成一个Map<sex,name>，注意：如果key重复会抛异常
+    // https://cloud.tencent.com/developer/article/1351931
+    private static void test7(List<Student> studentList) {
+        Map<String, String> sexNameMap = studentList.stream().collect(Collectors.toMap(p -> {
+            return p.getSex();
+        }, p2 -> {
+            return p2.getName();
+        }));
+        System.out.println(sexNameMap);
+    }
+
+    // 转换成一个Map<sex,name>，注意：如果key重复会抛异常
+    // 如果key重复，用后一个的value值覆盖前一个
+    private static void test8(List<Student> studentList) {
+        Map<String, String> sexNameMap = studentList.stream().collect(Collectors.toMap(p -> {
+            return p.getSex();
+        }, p2 -> {
+            return p2.getName();
+        }, (oldValue, newValue) -> newValue));
+        System.out.println(sexNameMap);
     }
 }

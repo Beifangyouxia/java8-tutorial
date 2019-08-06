@@ -667,6 +667,7 @@ Collectors常见方法：
 * Collectors.partitioningBy(Predicate<? super T> predicate) ，分区是分组的特殊情况，返回一个布尔值，意味着得到的分组Map的key只能是Boolean，于是它最多可以分为两组
 * Collectors.maxBy，求最大值，需要传一个自定义的Comparator
 * Collectors.reducing，广义的归约汇总。
+* Collectors.toMap ，得到Map集合。注意：如果key重复会抛异常，要特殊处理
 
 
 ```
@@ -706,6 +707,17 @@ optional1.ifPresent(System.out::println);
 // 年龄总和
 // reducing的参数，第一个：初始值。第二个：转换函数。第三个：累积函数
 int sum = studentList.stream().collect(Collectors.reducing(0, Student::getAge, Integer::sum));
+
+// 转换成一个Map<sex,name>，注意：如果key重复会抛异常
+// 如果key重复，用后一个的value值覆盖前一个
+private static void test8(List<Student> studentList) {
+    Map<String, String> sexNameMap = studentList.stream().collect(Collectors.toMap(p -> {
+        return p.getSex();
+    }, p2 -> {
+        return p2.getName();
+    }, (oldValue, newValue) -> newValue));
+    System.out.println(sexNameMap);
+}
 ```
 
 
